@@ -1,6 +1,6 @@
 def Selection_Sort(arr):
     for j in range(0,len(arr)):
-        
+
         min_indx = j
 
         for i in range(j + 1, len(arr)):
@@ -28,3 +28,9 @@ print(arr)
 arr1 = [90,80,27,40,50]
 Bubble_Sort(arr1)
 print(arr1)
+
+#Refrences
+'''
+    https://www.geeksforgeeks.org/selection-sort/
+    https://www.geeksforgeeks.org/bubble-sort/
+'''
