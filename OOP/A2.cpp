@@ -1,5 +1,5 @@
+//Refrences at the end of code
 #include <iostream>
-#include <string>
 // Below are two additional headers
 #include <ios>
 #include <limits>
@@ -187,3 +187,14 @@ int main()
     
     return 0;
 }
+
+//Refrences
+/*
+https://www.geeksforgeeks.org/copy-constructor-in-cpp/
+https://www.geeksforgeeks.org/static-keyword-cpp/
+https://www.geeksforgeeks.org/friend-class-function-cpp/
+https://www.geeksforgeeks.org/exception-handling-c/
+https://www.geeksforgeeks.org/clearing-the-input-buffer-in-cc/
+https://www.codespeedy.com/how-to-use-cin-ignore-in-cpp-to-clear-input-buffer/
+https://stackoverflow.com/questions/5864540/infinite-loop-with-cin-when-typing-string-while-a-number-is-expected
+*/
