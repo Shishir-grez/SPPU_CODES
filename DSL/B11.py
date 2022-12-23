@@ -19,7 +19,7 @@ def Sentinal_Search(arr, size ,key):
     arr[size-1] = last #At the end of the add last element back to list
 
     if(i<size-1 or arr[size - 1] == key): # if key is found before last element or key is the last element 
-       return i
+       print("Key found at index : ",i)
     else:
         print("Key not found in given array!")
 
@@ -64,12 +64,14 @@ def Fibonacci_Search(arr, key, size):
         print("invalid")
         return 0
 
+    check = 0       # If value if found check = 1 and if not check = 0
     offset = -1     # a required variable
     while(Fib_no(i) > 1):
         k = min(offset + Fib_no(i-2),size-1)    # min function returns minimun value of given numbers
 
-        if (key == arr[k]):     # if key found return index
-            return k
+        if (key == arr[k]):
+            check = 1     
+            return k    # if key found return index
         
         elif(key > arr[k]): 
             i = i - 1 
@@ -77,18 +79,62 @@ def Fibonacci_Search(arr, key, size):
         else :
             i = i - 2
 
+    if check == 0:
+        return -1
 
-arr = [1,3,7,9,13,34,45,67,89,90,99]
-size = len(arr)
+n = int(input("Enter the number of students : "))
+l=[]
+print("Enteries in Random Order are allowed")
 
-a = Linear_Search(arr,size,13)
-print(a)
-b = Sentinal_Search(arr,size,67)
-print(b)
-c = Binary_Search(arr,0,size-1,3)
-print(c)
-d = Fibonacci_Search(arr,99,size)
-print(d)
+for i in range(n):
+    l.append(int(input("Enter Roll no of Student no %d : "%(i+1))))
+
+key = int(input("Enter key to be searched : "))
+print("Enter 1 for Linear Search")
+print("Enter 2 for Sentinal Search")
+choice = int(input("Enter choice : "))
+
+if choice == 1:
+    b = Linear_Search(l,n,key)
+    if b==-1:
+        print("Key not found!")
+    else:
+        print("Key is found at index : ",b)
+
+elif choice == 2:
+    b = Sentinal_Search(l,n,key)
+else : 
+    print("Enter correct choice")
+    exit()
+
+n1 = int(input("Enter number of students : "))
+print("Entries must be in Sorted Order")
+l1 = []
+for i in range(n1):
+    l1.append(int(input("Enter Roll no of Student no %d : "%(i+1))))
+
+key1 = int(input("Enter key to be searched : "))
+print("Enter 1 for Binary Search")
+print("Enter 2 for Fibonacci Search")
+choice1 = int(input("Enter your choice : "))
+
+if choice1 == 1:
+    b = Binary_Search(l1,0,n1-1,key1)
+    if b==-1:
+        print("Key not found!")
+    else:
+        print("Key found at index : ",b)
+
+elif choice1 == 2:
+    b = Fibonacci_Search(l1,key1,n1)
+    if b == -1:
+        print("Key not found")
+    else:
+        print("Key found at index : ",b)
+
+else:
+    print("Enter correct choice")
+    exit()
 
 #Refrences
 '''
