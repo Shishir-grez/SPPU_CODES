@@ -1,5 +1,6 @@
 //Refrences at the end of code
 #include <iostream>
+#include <string>
 // Below are two additional headers
 #include <ios>
 #include <limits>
