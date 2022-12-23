@@ -1,3 +1,4 @@
+// Check end of code for refrences
 #include <iostream>
 using namespace std;
 class Complex
@@ -5,27 +6,31 @@ class Complex
     int real, img; // real and img will store real and imaginary part of complex no repectively
     // real + (img)i
     public:
+
     Complex() // This is a default constructor
     {
         real = 0; // Default Constructor makes complex number like (0 + 0i)
         img = 0;
     }
+
     Complex(int real, int img) // Parameterized Constructor
     {
         // this operator points to current object 
         this->real = real; // real part of current object = parameter(real)
         this->img = img; // img. part of current object = parameter (img)
     }
+
     Complex operator + (Complex o2); //line 28
     Complex operator * (Complex o2); //line 42
     friend istream& operator >> (istream& is, Complex& o); //line 57
     friend ostream& operator << (ostream& os, Complex& o); //line 67
+
 };
 /*function return_type    class name      operator to be overloaded
       //  Complex           Complex    ::  operator +              (Complex& o2)
                                //scope resolution operator      // function parameters*/
 
-Complex Complex:: operator+ (Complex o2)
+Complex Complex:: operator+ (Complex o2) 
 {
     Complex o3; // Created a new object to store addition
 
@@ -56,7 +61,7 @@ Complex Complex:: operator * (Complex o2)
 // syntax of operator overloading for << 
 ostream&  operator << (ostream& os, Complex& o) //function definition 
                         // do not forget (&)
-{ // add hyperlink
+{ 
     os << o.real << " + " << o.img << "i ";
     cout << endl;
     return os;
@@ -66,7 +71,7 @@ ostream&  operator << (ostream& os, Complex& o) //function definition
 // syntax of operator overloading for >> 
 istream&  operator >> (istream& is, Complex& o) //function definition 
                         // do not forget (&)
-{   // add hyperlink
+{   
     is >> o.real >> o.img;
     return is;
     // do not forget (return os)
@@ -94,5 +99,16 @@ int main()
     o5 = o2 * o3;
     cout << "Multiplication is : " << o5;
 
+
     return 0;
 }
+
+//References
+/*
+https://www.geeksforgeeks.org/operator-overloading-c/ 
+https://www.geeksforgeeks.org/operator-overloading-and-operator-in-a-linked-list-class/
+Articles on Operator overloading
+
+https://www.youtube.com/watch?v=BnMnozsSPmw&t=1373s&ab_channel=CodeBeauty
+Detailed video on Operator Overloading
+*/
