@@ -1,3 +1,4 @@
+// Resources at the end 
 #include <iostream>
 #include <string>
 using namespace std;
@@ -143,3 +144,11 @@ int main()
         }
     } while (ch != 3);
 }
+/*
+    https://www.geeksforgeeks.org/exception-handling-c/ ~ Exception Handling
+
+    https://www.geeksforgeeks.org/virtual-function-cpp/ ~ Virtual Functions
+
+    https://www.geeksforgeeks.org/pure-virtual-functions-and-abstract-classes/ ~ Pure virtual Functions
+    
+*/
