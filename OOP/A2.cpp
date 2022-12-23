@@ -43,16 +43,16 @@ class Database
     void MakeEntry() // Parameterized constructor to get input from user
     {
         cout << "\nEnter name : ";
-        getline(cin,name); // getline function is used to get input along with " " wide spaces
-        // eg "My name is SPPU" , using only cin will give error
-
-        //syntax :  "getline(cin,variable_name)"
-        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Use this line to clear stream buffer
-        //When we use getline function it is a good pratice to clear "stream buffer" to prevent "errors"
+        cin >> name; 
+        cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
 
         cout << "\nEnter class with division : "; 
-        getline(cin,class_with_div);
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        getline(cin,class_with_div);// getline function is used to get input along with " " wide spaces
+        // eg "My name is SPPU" , using only cin will give error\
+        //syntax :  "getline(cin,variable_name)"
+
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');// Use this line to clear stream buffer
+        //When we use getline function it is a good pratice to clear "stream buffer" to prevent "errors"
 
         cout << "\nEnter dob in dd/mm/yyyy format : "; 
         cin >> dob;
