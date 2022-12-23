@@ -21,13 +21,31 @@ def Bubble_Sort(arr):
                 arr[j] = temp
             k = k + 1
 
-arr = [80,60,20,40,90]
-Selection_Sort(arr)
-print(arr)   
+#Driver code
 
-arr1 = [90,80,27,40,50]
-Bubble_Sort(arr1)
-print(arr1)
+n = int(input("Enter total no students : "))
+l = []
+q = 5
+for i in range (n) :
+    l.append(float(input("Enter Marks of Student no %d : "%(i+1))))
+print("Enter 1 for Bubble Sort")
+print("Enter 2 for Selection Sort")
+choice = int(input("Enter your choice : "))
+if choice == 1:
+    Bubble_Sort(l)
+    print("Top 5 scores are : ")
+    for j in range (-1,-(q+1),-1): # To print last 5 elements {Since list is sorted is ascending order}
+        print (l[j])
+
+elif choice == 2:
+    Selection_Sort(l)
+    print("Top 5 scores are : ")
+    for j in range (-1,-(q+1),-1):
+        print(l[j])
+
+else :
+    print("Enter correct choice!")
+    exit()
 
 #Refrences
 '''
