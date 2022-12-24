@@ -36,3 +36,9 @@ quick_sort(l,0,n-1)
 print("Top 5 scores are : ")
 for i in range(-1,-6,-1): #print array in reverse order
     print(l[i])
+
+#Refrences 
+"""
+    https://www.geeksforgeeks.org/quick-sort/
+    https://www.geeksforgeeks.org/merge-sort/
+"""
