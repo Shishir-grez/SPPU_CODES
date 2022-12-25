@@ -145,6 +145,8 @@ else:
 
     https://www.geeksforgeeks.org/binary-search/ - for binary search 
 
+    https://www.geeksforgeeks.org/start-end-start2-preferrable-method-calculating-middle-array-start-end2/
+
     geeksforgeeks.org/fibonacci-search/ - for fibonacci search 
 
     https://www.youtube.com/watch?v=q_AVjuzBxoc&ab_channel=EnggTutes - YouTube video link for fibonacci search
