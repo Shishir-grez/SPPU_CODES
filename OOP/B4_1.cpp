@@ -1,38 +1,38 @@
-#include<iostream>
-#include<fstream>
+#include <iostream>
+#include <fstream>
 using namespace std;
 
 class test
 {
 public:
-	void writedata();
-	void readdata();
+  void writedata();
+  void readdata();
 };
 void test::writedata()
 {
- fstream fp;
- char ch;
- fp.open("it.txt",ios::out);
- cin>>ch;
- while (ch!='.')
- {
- fp.put(ch);
- cin>>ch;
- }
-fp.close();
+  fstream fp;
+  char ch;
+  fp.open("it.txt", ios::out);
+  cin >> ch;
+  while (ch != '.')
+  {
+    fp.put(ch);
+    cin >> ch;
+  }
+  fp.close();
 }
 void test::readdata()
 {
-	fstream fp;
-	char ch;
-	fp.open("it.txt",ios::in);
-ch=fp.get();
-while(!fp.eof())
-{
-cout<<ch;
-ch=fp.get(); 
-}
-fp.close();
+  fstream fp;
+  char ch;
+  fp.open("it.txt", ios::in);
+  ch = fp.get();
+  while (!fp.eof())
+  {
+    cout << ch;
+    ch = fp.get();
+  }
+  fp.close();
 }
 int main()
 {
@@ -40,17 +40,17 @@ int main()
   int ch;
   do
   {
-   cout<<"\n1.Write\n2.Read";
-   cout<<"\nEnter your choice= ";
-   cin>>ch;
-   switch(ch)
-   {
+    cout << "\n1.Write\n2.Read";
+    cout << "\nEnter your choice= ";
+    cin >> ch;
+    switch (ch)
+    {
     case 1:
-	ob.writedata();
-    break;
+      ob.writedata();
+      break;
     case 2:
-	ob.readdata();
-    break;
-   }
-  }while(ch<3);
+      ob.readdata();
+      break;
+    }
+  } while (ch < 3);
 }
