@@ -26,7 +26,6 @@ int main()
 	int x1,y1,x2,y2;
 	cout<<"Enter the endpoints of the line: ";
 	cin>>x1>>y1>>x2>>y2;
-	outtext("Before clipping");
 	rectangle(xmin,ymin,xmax,ymax);
 	line(x1,y1,x2,y2);
 	
@@ -102,14 +101,12 @@ int main()
 	if(accept)
        {
         cleardevice();
-        outtext("After clipping");
         rectangle(xmin,ymin,xmax,ymax);
         line(x1,y1,x2,y2);
        }
     else
         {
         cleardevice();
-        outtext("After clipping");
         rectangle(xmin,ymin,xmax,ymax);
         }
 	getch();
