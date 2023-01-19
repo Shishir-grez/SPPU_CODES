@@ -23,7 +23,6 @@ void CircleBres(int xc, int yc, int r)
     drawcircle(xc, yc, x, y);
     while (y >= x)
     {
-        x++;
         if (d > 0)
         {
             y--;
@@ -35,6 +34,7 @@ void CircleBres(int xc, int yc, int r)
         }
         drawcircle(xc, yc, x, y);
         delay(50);
+        x++;
     }
 }
 
