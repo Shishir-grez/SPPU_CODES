@@ -23,7 +23,7 @@ void CircleBres(int xc, int yc, int r)
     drawcircle(xc, yc, x, y);
     while (y >= x)
     {
-        if (d > 0)
+        if (d >= 0)
         {
             y--;
             d = d + 4 * x - 4 * y + 10;
