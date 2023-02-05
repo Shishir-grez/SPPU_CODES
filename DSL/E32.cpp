@@ -50,13 +50,23 @@ class queue
      void deque()
      {
          int x;
-         if(isempty())
+         if(isempty()){
               cout<<"queue is empty";
+         }
          else
          {
-             x = data[f];
-             f = (f+1) % max;
-             cout<<x<<"queue is deleted";
+            if(r==f)
+            {  
+                // This is the last element
+                x = data[f];
+                r = f = -1;
+            }  
+            else
+            {
+                x = data[f];
+                f = (f+1) % max;
+                cout<<x<<"queue is deleted";
+            }
          }
      }
      void reset()
