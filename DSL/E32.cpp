@@ -55,7 +55,7 @@ class queue
          else
          {
              x = data[f];
-             f++;
+             f = (f+1) % max;
              cout<<x<<"queue is deleted";
          }
      }
@@ -67,7 +67,7 @@ class queue
      {
          int i;
          cout<<"placed order are"<<endl;
-         for(i = f;i<=r;i++)
+         for(i = f;i<=r;((i+1) % max))
          {
              cout<<data[i]<<endl;  
           }
