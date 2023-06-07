@@ -1,0 +1,117 @@
+To modify the main file to display the number of comparisons for each method, you can make the following changes:
+
+1. In the `hashTable` class, modify the `search` method to return the number of comparisons instead of just the position. Update the print statements accordingly.
+
+```python
+# method to search for an element in the table
+def search(self, record):
+    found = False
+    position = self.hashFunction(record.get_number())
+    comparisons = 1
+
+    if self.table[position] != None:
+        if (
+            self.table[position].get_name() == record.get_name()
+            and self.table[position].get_number() == record.get_number()
+        ):
+            found = True
+            print(
+                "Phone number found at position {} with {} comparisons.".format(
+                    position, comparisons
+                )
+            )
+        else:
+            position += 1
+            if position >= self.size:
+                position = 0
+            while (
+                self.table[position] != None
+                and comparisons <= self.size
+            ):
+                if (
+                    self.table[position].get_name() == record.get_name()
+                    and self.table[position].get_number() == record.get_number()
+                ):
+                    found = True
+                    comparisons += 1
+                    print(
+                        "Phone number found at position {} with {} comparisons.".format(
+                            position, comparisons
+                        )
+                    )
+                    break
+                position += 1
+                if position >= self.size:
+                    position = 0
+                comparisons += 1
+            if not found:
+                print("Record not found.")
+    else:
+        print("Record not found.")
+
+    return comparisons
+```
+
+2. In the `doubleHashTable` class, make a similar modification to the `search` method.
+
+```python
+# method to search for an element in the table
+def search(self, record):
+    found = False
+    position = self.h1(record.get_number())
+    comparisons = 1
+
+    if self.table[position] != None:
+        if self.table[position].get_name() == record.get_name():
+            found = True
+            print(
+                "Phone number found at position {} with {} comparisons.".format(
+                    position, comparisons
+                )
+            )
+        else:
+            limit = self.size
+            i = 1
+            newPosition = position
+            while i <= limit:
+                position = (
+                    self.h1(record.get_number()) + i * self.h2(record.get_number())
+                ) % self.size
+                comparisons += 1
+                if self.table[position] != None:
+                    if self.table[position].get_name() == record.get_name():
+                        found = True
+                        print(
+                            "Phone number found at position {} with {} comparisons.".format(
+                                position, comparisons
+                            )
+                        )
+                        break
+                    elif self.table[position].get_name() == None:
+                        found = False
+                        break
+                    else:
+                        i += 1
+            if not found:
+                print("Record not found.")
+    else:
+        print("Record not found.")
+
+    return comparisons
+```
+
+3. In the main file, update the code where the `search` methods are called to capture the number of comparisons returned.
+
+```python
+if (choice2 == 2):
+    record = input_record()
+    comparisons = h1.search(record)
+    print("Number of comparisons in linear probing: {}".format(comparisons))
+
+elif (choice2 == 5):
+    record = input_record()
+    comparisons = h2.search(record)
+    print("Number of comparisons in double hashing: {}".format(comparisons))
+```
+
+By making these modifications, the main file will display the number of comparisons required for each method (linear probing and double hashing) when searching for a telephone number.
