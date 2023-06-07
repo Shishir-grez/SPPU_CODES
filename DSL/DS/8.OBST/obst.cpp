@@ -41,7 +41,7 @@ public:
     {
         int m, k;
         int minimum = 32000;
-        for (m = r[i][j - 1]; m <= r[i + 1][j]; m++)
+        for (m = i; m <= j; m++)
         {
             if ((c[i][m - 1] + c[m][j]) < minimum)
             {
@@ -55,7 +55,7 @@ public:
     basically computes C,r,W values */
     void build_OBST()
     {
-        int i, j, k, l, m;
+        int i, j, k, m;
         for (i = 0; i < n; i++)
         {
             // initialize
