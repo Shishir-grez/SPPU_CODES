@@ -32,7 +32,7 @@ void addStudent()
 
     // Open the file in append mode
     ofstream file;
-    file.open(fileName, ios::app);
+    file.open("student.txt", ios::app);
     if (!file.is_open())
     {
         cout << "Error opening file." << endl;
@@ -65,7 +65,7 @@ void deleteStudent()
 
     // Open the original file for reading
     ifstream file;
-    file.open(fileName, ios::in);
+    file.open("student.txt", ios::in);
     if (!file.is_open())
     {
         cout << "Error opening file." << endl;
@@ -79,7 +79,19 @@ void deleteStudent()
     while (getline(file, line))
     {
         // Extract the roll number from the line
-        int currentRollNumber = stoi(line.substr(0, line.find(',')));
+        char str[1000];
+        int m = 0;
+        int i = 0;
+
+        while (line[i] != '\0' && line[i] != ',')
+        {
+            str[m] = line[i];
+            i++;
+            m++;
+        }
+
+        str[m] = '\0';
+        int currentRollNumber = atoi(str);
 
         // If the roll number matches, skip writing to the temporary file
         if (currentRollNumber == rollNumber)
