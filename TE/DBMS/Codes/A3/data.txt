@@ -1,0 +1,204 @@
+show databases;
+create database banksystem;
+use banksystem;
+show tables;
+create table Branch(branch_name varchar(10), branch_city varchar(10), assests varchar(10), primary key(branch_name));
+
+create table Customer(cust_name varchar(20) primary key, cust_street varchar(10), cust_city varchar(10));
+
+create table Account(Acc_no int primary key, branch_name varchar(10), balance int, foreign key (branch_name) references Branch(branch_name));
+
+create table Depositor(cust_name varchar(20), acc_no int, foreign key(cust_name) references Customer(cust_name), foreign key(acc_no) references Account(Acc_no));
+
+create table Loan(loan_no int primary key, branch_name varchar(10), amount int, foreign key(branch_name) references Branch(branch_name));
+
+create table Borrower(cust_name varchar(20), loan_no int, foreign key(cust_name) references Customer(cust_name), foreign key(loan_no) references Loan(loan_no));
+
+insert into Branch values("Katraj", "Pune", "NULL");
+insert into Branch values("KP", "Pune", "NULL");
+insert into Branch values("Dhankawadi", "Pune", "NULL");
+insert into Branch values("Sinhgad", "Pune", "NULL");
+insert into Branch values("Deccan", "Pune", "NULL");
+insert into Branch values("Kothrud", "Pune", "NULL");
+insert into Branch values("Kondhwa", "Pune", "NULL");
+insert into Branch values("Warje", "Pune", "NULL");
+insert into Branch values("Dhayari", "Pune", "NULL");
+insert into Branch values("Hadapsar", "Pune", "NULL");
+
+select * from Branch order by branch_name;
+
+insert into Customer values("Robin","10th St.","Pune");
+insert into Customer values("Yash","10th St.","Pune");
+insert into Customer values("Suraj","10th St.","Pune");
+insert into Customer values("Shrikar","10th St.","Pune");
+insert into Customer values("Tejas","10th St.","Pune");
+insert into Customer values("Mahesh","10th St.","Pune");
+insert into Customer values("Sahil","10th St.","Pune");
+insert into Customer values("Shreetej","10th St.","Pune");
+insert into Customer values("Atharva","10th St.","Pune");
+insert into Customer values("Rohan","10th St.","Pune");
+insert into Customer values("Kaushal","10th St.","Pune");
+insert into Customer values("Aryan","10th St.","Pune");
+insert into Customer values("Swaraj","10th St.","Pune");
+insert into Customer values("Onkar","10th St.","Pune");
+insert into Customer values("Aditya","10th St.","Pune");
+insert into Customer values("Sushant","10th St.","Pune");
+insert into Customer values("Shantanu","10th St.","Pune");
+insert into Customer values("Alok","10th St.","Pune");
+insert into Customer values("Dhruv","10th St.","Pune");
+insert into Customer values("Ashutosh","10th St.","Pune");
+
+select * from Customer;
+
+insert into Account values(1, "Deccan", 56415);
+insert into Account values(2, "Dhankawadi", 87941);
+insert into Account values(3, "Dhayari", 13797);
+insert into Account values(4, "Hadapsar", 4679465);
+insert into Account values(5, "Katraj", 12657945);
+insert into Account values(6, "Kondhwa", 7894556);
+insert into Account values(7, "Kothrud", 798154);
+insert into Account values(8, "KP", 45687125);
+insert into Account values(9, "Sinhgad", 7891656);
+insert into Account values(10, "Warje", 46861324);
+insert into Account values(11, "Deccan", 4657613);
+insert into Account values(12, "Dhankawadi", 798343210);
+insert into Account values(13, "Dhayari", 789451);
+insert into Account values(14, "Hadapsar", 475158);
+insert into Account values(15, "Katraj", 986576);
+insert into Account values(16, "Kondhwa", 124789);
+insert into Account values(17, "Kothrud", 79795);
+insert into Account values(18, "KP", 6554874);
+insert into Account values(19, "Sinhgad", 45612);
+insert into Account values(20, "Warje", 78944);
+
+select * from Account;
+
+insert into Depositor values("Aditya", 1);
+insert into Depositor values("Alok", 2);
+insert into Depositor values("Aryan", 3);
+insert into Depositor values("Ashutosh", 4);
+insert into Depositor values("Atharva", 5);
+insert into Depositor values("Dhruv", 6);
+insert into Depositor values("Kaushal", 7);
+insert into Depositor values("Mahesh", 8);
+insert into Depositor values("Onkar", 9);
+insert into Depositor values("Robin", 10);
+insert into Depositor values("Rohan", 11);
+insert into Depositor values("Sahil", 12);
+insert into Depositor values("Shantanu", 13);
+insert into Depositor values("Shreetej", 14);
+insert into Depositor values("Shrikar", 15);
+insert into Depositor values("Suraj", 16);
+insert into Depositor values("Sushant", 17);
+insert into Depositor values("Swaraj", 18);
+insert into Depositor values("Tejas", 19);
+insert into Depositor values("Yash", 20);
+
+select * from Depositor;
+
+commit;
+
+insert into Loan values(1, "Deccan", 500000);
+insert into Loan values(2, "Dhankawadi", 500000);
+insert into Loan values(3, "Dhayari", 500000);
+insert into Loan values(4, "Hadapsar", 500000);
+insert into Loan values(5, "Katraj", 500000);
+insert into Loan values(6, "Kondhwa", 500000);
+insert into Loan values(7, "Kothrud", 500000);
+insert into Loan values(8, "KP", 500000);
+insert into Loan values(9, "Sinhgad", 500000);
+insert into Loan values(10, "Warje", 500000);
+
+select * from Loan;
+
+insert into Borrower values("Aditya", 1);
+insert into Borrower values ("Aryan", 2);
+insert into Borrower values ("Atharva", 3);
+insert into Borrower values ("Kaushal", 4);
+insert into Borrower values ("Onkar", 5);
+insert into Borrower values ("Rohan", 6);
+insert into Borrower values ("Shantanu", 7);
+insert into Borrower values ("Shrikar", 8);
+insert into Borrower values ("Sushant", 9);
+insert into Borrower values ("Tejas", 10);
+
+select * from Borrower;
+
+
+select * from Account;
+
+select * from Branch;
+
+select * from Customer;
+
+select * from Depositor;
+
+select * from Loan;
+
+select * from Borrower;
+
+commit;
+
+-- Q1)
+select distinct l.branch_name from Loan l;
+
+-- Q2)
+select l.loan_no from Loan l where l.branch_name = "Akurdi" and l.amount > 12000;
+
+
+-- Q3)
+select b.*, l.amount from Borrower b, Loan l where b.loan_no = l.loan_no;
+
+-- Q4)
+select cust_name from Borrower, Loan where Borrower.loan_no = Loan.loan_no and Loan.branch_name = "Akurdi" Order BY cust_name;
+
+-- Q.5)
+create view view4 as
+     select d.*
+     from Depositor d;
+
+create view view5 as
+     select b.*
+     from Borrower b;
+
+create view view6 as
+     select view4.*, view5.loan_no
+     from view4 LEFT JOIN view5
+     ON view4.cust_name = view5.cust_name;
+
+select * from view6;
+
+-- Q6)
+select b.*, d.acc_no from Borrower b, Depositor d where b.cust_name = d.cust_name;
+
+-- Q7)
+SELECT c.cust_name AS 'LIST OF CUSTOMERS HAVING ACC BUT NO LOAN' FROM Customer c LEFT JOIN Depositor d ON c.cust_name = d.cust_name LEFT JOIN Borrower b ON c.cust_name = b.cust_name WHERE d.acc_no IS NOT NULL AND b.loan_no IS NULL;       
+
+-- Q8)
+select avg(balance) as branchAverage, branch_name from Account group by branch_name;
+
+-- Q9)
+select count(d.cust_name) as 'No. of Depositors at Each Branch', a.branch_name from Depositor d, Account a where d.acc_no = a.Acc_no group by a.branch_name;
+
+
+-- Q10)
+SELECT cust_name, cust_city FROM Customer WHERE cust_name LIKE 'P%';
+
+-- Q11)
+SELECT DISTINCT branch_city FROM Branch;
+
+--  Q12)
+SELECT branch_name AS 'Branches having avg balance > 12000' FROM Account GROUP BY branch_name HAVING AVG(balance) > 12000;
+
+-- Q13)
+SELECT COUNT(*) AS 'No. of Tuples in Customer Relation' FROM Customer;
+
+-- Q14)
+SELECT SUM(amount) AS 'Total Loan Amount Given by Bank' FROM Loan;
+
+-- Q15)
+DELETE FROM Loan WHERE amount BETWEEN 1300 AND 1500;
+
+--  Q16)
+DELETE FROM Branch WHERE branch_name = 'NIGDI';
+

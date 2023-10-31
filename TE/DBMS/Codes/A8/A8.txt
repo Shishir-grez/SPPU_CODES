@@ -1,0 +1,54 @@
+CREATE TABLE Lib(UniID int PRIMARY KEY, Name VARCHAR2(40), Book_Issued VARCHAR2(50));
+CREATE TABLE Lib_Audit(UniID int, Name VARCHAR2(40), Book_Issued VARCHAR2(50));
+
+CREATE OR REPLACE TRIGGER Lib_Rec_Management_I	
+AFTER	
+INSERT	
+ON Lib	
+REFERENCING OLD AS oldrec NEW AS newrec	
+FOR EACH ROW	
+BEGIN	
+	INSERT INTO Lib_Audit VALUES(:newrec.UniID, :newrec.Name, :newrec.Book_Issued);
+	dbms_output.put_line('Data Inserted into Lib & Lib_Audit Table.');
+END;
+
+CREATE OR REPLACE TRIGGER Lib_Rec_Management_D	
+BEFORE	
+DELETE	
+ON Lib	
+REFERENCING OLD AS oldrec NEW AS newrec	
+FOR EACH ROW	
+BEGIN	
+	INSERT INTO Lib_Audit VALUES(:oldrec.UniID, :oldrec.Name, :oldrec.Book_Issued);
+	dbms_output.put_line('Data Deleted from Lib & Inserted into Lib_Audit Table.');
+END;
+
+CREATE OR REPLACE TRIGGER Lib_Rec_Management_U	
+BEFORE	
+UPDATE	
+ON Lib	
+REFERENCING OLD AS oldrec NEW AS newrec	
+FOR EACH ROW	
+BEGIN	
+	INSERT INTO Lib_Audit VALUES(:newrec.UniID, :newrec.Name, :newrec.Book_Issued);
+	dbms_output.put_line('Data Updated in Lib & Inserted into Lib_Audit Table.');
+END;
+
+INSERT INTO Lib VALUES(1, 'ROBIN','DBMS');
+INSERT INTO Lib VALUES(2, 'ROBIN-2','DBMS');
+INSERT INTO Lib VALUES(3, 'ROBIN-3','DBMS');
+INSERT INTO Lib VALUES(4, 'ROBIN-4','DBMS');
+
+DELETE FROM Lib WHERE UniID = 4;
+
+UPDATE Lib SET Name = 'Robin-1' WHERE UniID = 1;
+
+SELECT * FROM Lib ORDER BY UniID;
+SELECT * FROM Lib_Audit ORDER BY UniID;
+
+DELETE FROM Lib;
+DELETE FROM Lib_Audit;
+
+DROP TRIGGER Lib_Rec_Management_I;
+DROP TRIGGER Lib_Rec_Management_D;
+DROP TRIGGER Lib_Rec_Management_U;

@@ -1,0 +1,62 @@
+-- create table O_Roll_Call(Roll int, Name varchar(20), Class varchar(10));
+-- create table N_Roll_Call(Roll int, Name varchar(20), Class varchar(10));
+
+-- insert into O_Roll_Call values (3001, 'Rob-1', 'TE');
+-- insert into O_Roll_Call values (3002, 'Rob-2', 'TE');
+-- insert into O_Roll_Call values (3003, 'Rob-3', 'TE');
+
+-- insert into N_Roll_Call values (3001, 'Rob-1', 'TE');
+
+DECLARE
+	rl int;
+	name varchar(20);
+	class varchar(10);
+	checker boolean := true;
+    crsr_Roll int;
+	crsr_Name varchar(20);
+	crsr_Class varchar(10);
+    CURSOR crsr_OT(roll int) IS SELECT Roll, Name, Class FROM O_Roll_Call;
+    CURSOR crsr_NT(roll int) IS SELECT Roll, Name, Class FROM N_Roll_Call;
+BEGIN
+    rl:=3001;
+	name:='Rob';
+	class:='TE';
+	OPEN crsr_OT(rl);
+	WHILE(checker) LOOP
+		FETCH crsr_OT INTO crsr_Roll, crsr_Name, crsr_Class;
+		EXIT WHEN crsr_OT%NOTFOUND;
+		IF (crsr_Roll = rl AND crsr_Name = name AND crsr_Class = class)
+            THEN checker := false;
+        END IF;
+    END LOOP;
+	CLOSE crsr_OT;
+	IF(checker)
+        THEN INSERT INTO O_Roll_Call VALUES(rl, name, class);
+			 dbms_output.put_line('Data Inserted into Old Table.');
+	ELSE dbms_output.put_line('Data Already present into Old Table.');
+    END IF;
+
+	checker := true;
+
+	OPEN crsr_NT(rl);
+	WHILE(checker) LOOP
+		FETCH crsr_NT INTO crsr_Roll, crsr_Name, crsr_Class;
+		EXIT WHEN crsr_NT%NOTFOUND;
+		IF (crsr_Roll = rl AND crsr_Name = name AND crsr_Class = class)
+            THEN checker := false;
+        END IF;
+    END LOOP;
+	CLOSE crsr_NT;
+	IF(checker)
+        THEN INSERT INTO N_Roll_Call VALUES(rl, name, class);
+			 dbms_output.put_line('Data Inserted into New Table.');
+	ELSE dbms_output.put_line('Data Already present into New Table.');
+    END IF;
+	
+END;
+/
+
+DELETE FROM O_Roll_Call WHERE Name = 'Rob';
+
+SELECT * FROM O_Roll_Call;
+SELECT * FROM N_Roll_Call;

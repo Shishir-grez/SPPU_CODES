@@ -1,0 +1,281 @@
+Aggregation
+
+Q1)
+Empdb> db.Employee.aggregate([ { $group: { _id: "$Designation", TotalSalary: { $sum: "$Salary" } } }, { $match: { TotalSalary: { $gt: 100000 } } }, { $project: { _id: 0, Designation: "$_id", TotalSalary:'$TotalSalary' } }] );
+[
+  { Designation: 'Programmer', TotalSalary: 182549 },
+  { Designation: 'Tester', TotalSalary: 190794 }
+]
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q2)
+Empdb> db.Employee.aggregate([
+... {$match:{Designation:'DBA'}},
+... {$group:{_id:'$Address.City',TotalSalary:{$sum:'$Salary'}}},
+... {$project:{Designation:'$Designation',_id:0,City:'$_id',TotalSalary:1}}
+... ]);
+
+Empdb>
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q3)
+Empdb> db.Employee.aggregate([ { $match: { Designation: 'DBA' } }, { $group: { _id: '$Company_Name', TotalSalary: { $sum: '$Salary' } } }, { $project: { _id: 0, Designation: '$Designation', Company_Name: '$_id', TotalSalary: '$TotalSalary' } }] );
+
+Empdb>
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q4)
+Empdb> db.Employee.aggregate([ { $project: { Name: { FName:{$toUpper: '$Name.FName'},LName:{$toUpper: '$Name.LName'} } } }, { $sort: { Name: 1 } }] );
+[
+  {
+    _id: ObjectId("6531509831dfd733a087ce67"),
+    Name: { FName: 'ATHARVA', LName: 'GAWADE' }
+  },
+  {
+    _id: ObjectId("653150b531dfd733a087ce69"),
+    Name: { FName: 'MAHESH', LName: 'BHABHAD' }
+  },
+  {
+    _id: ObjectId("65314faa31dfd733a087ce61"),
+    Name: { FName: 'ROBIN', LName: 'WADEKAR' }
+  },
+  {
+    _id: ObjectId("653150a531dfd733a087ce68"),
+    Name: { FName: 'SAHIL', LName: 'VENGURLEKAR' }
+  },
+  {
+    _id: ObjectId("6531508b31dfd733a087ce66"),
+    Name: { FName: 'SHREETEJ', LName: 'CHAVAN' }
+  },
+  {
+    _id: ObjectId("6536300056772bc2df9cb72f"),
+    Name: { FName: 'SHRIKAR', LName: 'KOLTE' }
+  },
+  {
+    _id: ObjectId("6536286b81ed71097c4f5c46"),
+    Name: { FName: 'SOMEONE', LName: 'NEW' }
+  },
+  {
+    _id: ObjectId("6531506d31dfd733a087ce64"),
+    Name: { FName: 'SURAJ', LName: 'GAWADE' }
+  },
+  {
+    _id: ObjectId("6531503d31dfd733a087ce63"),
+    Name: { FName: 'YASH', LName: 'SHIVATARE' }
+  }
+]
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q5)
+Empdb> db.Employee.countDocuments();
+9
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q6)
+Empdb> db.Employee.aggregate([
+... {$group:{_id:'$Designation',AvgSal:{$avg:'$Salary'}}},
+... {$project:{_id:0,Designation:'$_id',AvgSal:1}},
+... {$sort:{AvgSal:1}}
+... ]);
+[
+  { AvgSal: 47698.5, Designation: 'Tester' },
+  { AvgSal: 47930, Designation: 'Developer' },
+  { AvgSal: 60849.666666666664, Designation: 'Programmer' }
+]
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q7)
+Empdb> db.Employee.aggregate([
+... {$match:{'Name.FName':'Swapnil'}},
+... {$project:{_id:0,Name:{FName:'Name.FName',LName:'Name.LName'},Expertise:1}},
+... {$unwind:'$Expertise'}
+... ]);
+
+Empdb>
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q8)
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q9)
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q10)
+Empdb> db.Employee.aggregate([
+... {$group:{_id:'$Company_Name',MinSalary:{$min:'$Salary'},MaxSalary:{$max:'$Salary'}}},
+... {$project:{_id:0,Company_Name:'$_id',MinSalary:1,MaxSalary:1}}
+... ]);
+[
+  { MinSalary: 45975, MaxSalary: 65487, Company_Name: 'L&T' },
+  { MinSalary: 14445, MaxSalary: 78412, Company_Name: 'TCS' },
+  { MinSalary: 47895, MaxSalary: 47965, Company_Name: 'Infosys' }
+]
+
+Indexing
+
+Q1)
+Empdb> db.Employee.createIndex({Designation:1});
+Designation_1
+
+Empdb> db.Employee.find({Designation:'Programmer'});
+[
+  {
+    _id: ObjectId("65314faa31dfd733a087ce61"),
+    Empid: 3001,
+    Name: { FName: 'Robin', LName: 'Wadekar' },
+    Company_Name: 'TCS',
+    Salary: 58489,
+    Designation: 'Programmer',
+    Age: 19,
+    Expertise: [ 'Mongodb', 'MySQL', 'C/C++', 'Java' ],
+    DOB: '30-11-2003',
+    Email_id: 'robwadekar3011@gmail.com',
+    Contact: '7058883011',
+    Address: [
+      { Area: 'Katraj', City: 'Pune', Pin_code: 411046 },
+      { Area: 'Katraj', City: 'Pune', Pin_code: 411046 }
+    ]
+  },
+  {
+    _id: ObjectId("6531506d31dfd733a087ce64"),
+    Empid: 3004,
+    Name: { FName: 'Suraj', LName: 'Gawade' },
+    Company_Name: 'TCS',
+    Salary: 78412,
+    Designation: 'Programmer',
+    Age: 19,
+    Expertise: [ 'Java', 'Mongodb', 'MySQL', 'HTML', 'C/C++', 'Python' ],
+    DOB: '26-11-2003',
+    Email_id: 'surag.gawade@gmail.com',
+    Contact: '9767859000',
+    Address: [
+      { Area: 'Kalyani Nagar', City: 'Pune', Pin_code: 411006 },
+      { Area: 'Kalyani Nagar', City: 'Pune', Pin_code: 411006 }
+    ]
+  },
+  {
+    _id: ObjectId("6531509831dfd733a087ce67"),
+    Empid: 3007,
+    Name: { FName: 'Atharva', LName: 'Gawade' },
+    Company_Name: 'TCS',
+    Salary: 45648,
+    Designation: 'Programmer',
+    Age: 20,
+    Expertise: [ 'C/C++', 'Python' ],
+    DOB: '25-12-2003',
+    Email_id: 'atharvaGawade@gmail.com',
+    Contact: '7387320264',
+    Address: [
+      { Area: 'Somewhere in the Pune', City: 'Pune', Pin_code: 411000 },
+      { Area: 'Somewhere in the Pine', City: 'Pune', Pin_code: 411000 }
+    ]
+  }
+]
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q2)
+Empdb> db.Employee.ensureIndex({Name:1,Age:-1});
+[ 'Name_1_Age_-1' ]
+
+Empdb> db.Employee.find({'Name.FName':'Robin',Age:19});
+[
+  {
+    _id: ObjectId("65314faa31dfd733a087ce61"),
+    Empid: 3001,
+    Name: { FName: 'Robin', LName: 'Wadekar' },
+    Company_Name: 'TCS',
+    Salary: 58489,
+    Designation: 'Programmer',
+    Age: 19,
+    Expertise: [ 'Mongodb', 'MySQL', 'C/C++', 'Java' ],
+    DOB: '30-11-2003',
+    Email_id: 'robwadekar3011@gmail.com',
+    Contact: '7058883011',
+    Address: [
+      { Area: 'Katraj', City: 'Pune', Pin_code: 411046 },
+      { Area: 'Katraj', City: 'Pune', Pin_code: 411046 }
+    ]
+  }
+]
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q3)
+Empdb> db.Employee.createIndex({Expertise:-1});
+Expertise_-1
+
+Empdb> db.Employee.find({Expertise:{$all:['Mongodb','MySQL']}});
+[
+  {
+    _id: ObjectId("65314faa31dfd733a087ce61"),
+    Empid: 3001,
+    Name: { FName: 'Robin', LName: 'Wadekar' },
+    Company_Name: 'TCS',
+    Salary: 58489,
+    Designation: 'Programmer',
+    Age: 19,
+    Expertise: [ 'Mongodb', 'MySQL', 'C/C++', 'Java' ],
+    DOB: '30-11-2003',
+    Email_id: 'robwadekar3011@gmail.com',
+    Contact: '7058883011',
+    Address: [
+      { Area: 'Katraj', City: 'Pune', Pin_code: 411046 },
+      { Area: 'Katraj', City: 'Pune', Pin_code: 411046 }
+    ]
+  },
+  {
+    _id: ObjectId("6531506d31dfd733a087ce64"),
+    Empid: 3004,
+    Name: { FName: 'Suraj', LName: 'Gawade' },
+    Company_Name: 'TCS',
+    Salary: 78412,
+    Designation: 'Programmer',
+    Age: 19,
+    Expertise: [ 'Java', 'Mongodb', 'MySQL', 'HTML', 'C/C++', 'Python' ],
+    DOB: '26-11-2003',
+    Email_id: 'surag.gawade@gmail.com',
+    Contact: '9767859000',
+    Address: [
+      { Area: 'Kalyani Nagar', City: 'Pune', Pin_code: 411006 },
+      { Area: 'Kalyani Nagar', City: 'Pune', Pin_code: 411006 }
+    ]
+  }
+]
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q4)
+Empdb> db.Employee.getIndexes();
+[
+  { v: 2, key: { _id: 1 }, name: '_id_' },
+  { v: 2, key: { Designation: 1 }, name: 'Designation_1' },
+  { v: 2, key: { Name: 1, Age: -1 }, name: 'Name_1_Age_-1' },
+  { v: 2, key: { Expertise: -1 }, name: 'Expertise_-1' }
+]
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q5)
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q6)
+Empdb> db.Employee.dropIndex({Designation:1});
+{ nIndexesWas: 4, ok: 1 }
+
+Empdb> db.Employee.getIndexes();
+[
+  { v: 2, key: { _id: 1 }, name: '_id_' },
+  { v: 2, key: { Name: 1, Age: -1 }, name: 'Name_1_Age_-1' },
+  { v: 2, key: { Expertise: -1 }, name: 'Expertise_-1' }
+]
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Q7)
+Empdb> db.Employee.dropIndexes();
+{
+  nIndexesWas: 3,
+  msg: 'non-_id indexes dropped for collection',
+  ok: 1
+}
+
+Empdb> db.Employee.getIndexes();
+[ { v: 2, key: { _id: 1 }, name: '_id_' } ]

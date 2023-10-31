@@ -1,0 +1,47 @@
+CREATE TABLE Stud(S_name VARCHAR(20), total_marks INT, PRIMARY KEY(S_name));
+CREATE TABLE Results(Roll INT, R_name VARCHAR(20), class VARCHAR(20), FOREIGN KEY(R_name) REFERENCES Stud(S_name));
+
+
+INSERT INTO Stud VALUES('Robin-1',800);
+INSERT INTO Stud VALUES('Robin-2',920);
+INSERT INTO Stud VALUES('Robin-3',1400);
+INSERT INTO Stud VALUES('Robin-4',850);
+
+
+CREATE OR REPLACE PROCEDURE proc_Grade
+    IS
+    	crsr_name VARCHAR(20);
+		crsr_marks INT;
+		i INT := 1;
+    	CURSOR crsr IS SELECT S_name, total_marks FROM Stud;
+    BEGIN
+        OPEN crsr;
+		WHILE (TRUE) LOOP
+            FETCH crsr INTO crsr_name, crsr_marks;
+			EXIT WHEN crsr%NOTFOUND;
+			IF (crsr_marks <= 1500 AND crsr_marks >= 990)
+                THEN INSERT INTO Results VALUES(i, crsr_name, 'Distinction');
+			ELSIF (crsr_marks < 989 AND crsr_marks >= 900)
+                THEN INSERT INTO Results VALUES(i, crsr_name, 'First');
+			ELSIF (crsr_marks  < 899 AND crsr_marks >= 825)
+                THEN INSERT INTO Results VALUES(i, crsr_name, 'Higher Second');
+			ELSE INSERT INTO Results VALUES(i, crsr_name, 'Fail');
+			END IF;
+			i := i+1;
+        END LOOP;
+		CLOSE crsr;
+    END;
+    /
+
+EXECUTE proc_Grade;
+
+DROP PROCEDDURE proc_Grade;
+
+SELECT * FROM Stud;
+SELECT * FROM Results;
+
+DELETE FROM Stud;
+DELETE FROM Results;
+
+DROP TABLE Stud;
+DROP TABLE Results;

@@ -1,0 +1,69 @@
+select * from Account;
+select * from Branch;
+select * from Customer;
+select * from Depositor;
+select * from Loan;
+select * from Borrower;
+commit;
+
+CREATE VIEW view1 AS
+     SELECT b.cust_name, l.branch_name
+     FROM Borrower b, Loan l
+     WHERE b.loan_no = l.loan_no AND l.branch_name = 'Pune Station'
+     GROUP BY b.cust_name;
+
+SELECT * FROM view1;
+
+CREATE VIEW View2 AS
+     SELECT Branch.branch_name, Branch.branch_city
+     FROM Branch;
+
+SELECT * FROM View2;
+
+INSERT INTO View2 VALUES("Swargate", "Pune");
+INSERT INTO View2 VALUES("Mumbai_Uni", "Mumbai");
+INSERT INTO View2 VALUES("CBI Bombay", "Mumbai");
+INSERT INTO View2 VALUES ("Bombay Clg", "Mumbai");
+
+SELECT * FROM View2;
+
+DELETE FROM View2
+     WHERE branch_name LIKE "%Bombay";
+
+SELECT * FROM View2;
+
+UPDATE View2
+     SET branch_name = "JUHU Beach"
+     WHERE branch_name LIKE "%Uni";
+
+SELECT * FROM View2;
+
+CREATE VIEW View3 AS
+     SELECT d.cust_name, b.loan_no
+     from Depositor d LEFT JOIN Borrower b
+     ON d.cust_name = b.cust_name;
+
+select * from View3;
+
+create view view4 as
+     select d.*
+     from Depositor d;
+
+select * from view4;
+
+create view view5 as
+     select b.*
+     from Borrower b;
+
+select * from view5;
+
+create view view6 as
+     select view4.*, view5.loan_no
+     from view4 LEFT JOIN view5
+     ON view4.cust_name = view5.cust_name;
+
+select * from view6;
+
+CREATE UNIQUE INDEX indx ON Customer (cust_name);
+
+SELECT table_name, index_name, column_name FROM information_schema.statistics WHERE table_schema = 'banksystem' AND table_name = 'Customer';

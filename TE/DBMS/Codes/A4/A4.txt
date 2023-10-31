@@ -1,0 +1,66 @@
+SET SERVEROUTPUT ON;
+
+--  TO View Tables : SELECT TABLE_NAME FROM USER_TABLES;
+-- To Drop Tables : DROP TABLE TABLE_NAME;
+
+
+create table Borrower (B_Roll_no int primary key, Name varchar(50), Date_of_Issue date, Name_of_Book varchar(50), Status varchar(10));
+create table Fine (F_Roll_no int, Date_of_Return date, Amt int, foreign key (F_Roll_no) references Borrower (B_Roll_no));
+
+insert into Borrower values (3001, 'Robin', to_date('2023-09-01', 'yyyy-mm-dd'), 'DBMS', 'Sth');
+insert into Borrower values (3002, 'Robin-15', to_date('2023-08-25', 'yyyy-mm-dd'), 'DBMS', 'Sth');
+insert into Borrower values (3003, 'Robin-30', to_date('2023-07-01', 'yyyy-mm-dd'), 'DBMS', 'Sth');
+
+UPDATE Borrower SET STATUS = 'I';	
+
+SELECT * FROM Borrower;
+
+DECLARE
+    rl int; -- roll no
+	name varchar(50);--name of the borrower
+	nob varchar(50); -- name of book
+	dor date; -- date of return
+	nod int; -- no. of days
+	fine int := 0;
+
+	CURSOR crsr IS SELECT B_ROLL_no, Name, Date_of_Issue, Name_of_Book FROM BORROWER;
+
+	crsr_rl int;
+	crsr_name varchar(50);
+	crsr_doi date; -- date of issue
+	crsr_nob varchar(50);
+	
+BEGIN
+    rl := &Borrowers_Roll_No;
+    -- rl := 3003;
+    name := '&Borrowers_Name';
+    -- name := 'Robin-30';
+    nob := '&Nob';
+    -- nob := 'DBMS';
+    dor := TO_DATE('&Dor', 'yyyy-mm-dd');
+    -- dor := to_date('2023-09-13','yyyy-mm-dd');
+    OPEN crsr;
+	WHILE (TRUE) LOOP
+        	FETCH crsr INTO crsr_rl, crsr_name, crsr_doi, crsr_nob;
+        	nod := dor - crsr_doi;
+		EXIT WHEN crsr%NOTFOUND;
+		IF (nod < 15 AND crsr_name = name AND crsr_rl = rl AND crsr_nob = nob)
+            		THEN fine := 0;
+        	ELSIF (nod >= 15 AND nod <= 30 AND crsr_name = name AND crsr_rl = rl AND crsr_nob = nob)
+            		THEN fine := 5 * (nod-15);
+        	ELSIF (nod > 30 AND crsr_name = name AND crsr_rl = rl AND crsr_nob = nob)
+            		THEN fine := 75 + (50 * (nod-30));
+        	END IF;
+    	END LOOP;
+    INSERT INTO Fine VALUES (rl, dor, fine);
+    UPDATE Borrower SET STATUS = 'R' WHERE B_Roll_no = rl;
+    CLOSE crsr;
+    COMMIT;
+END;
+/
+
+SELECT * FROM Borrower;
+SELECT * FROM Fine;
+DELETE FROM Fine;
+DROP TABLE Borrower;
+DROP TABLE Fine;
