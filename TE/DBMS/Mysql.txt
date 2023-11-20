@@ -1,0 +1,1140 @@
+The database is a collection of inter-related data which is used to retrieve, insert and delete the data efficiently. It is also used to organize the data in the form of a table, schema, views, and reports, etc.
+- Database management system is a software which is used to manage the database
+
+
+CREATE DATABASE Bank;
+
+use Bank;
+
+CREATE TABLE Branch(branch_name VARCHAR(20) PRIMARY KEY, branch_city VARCHAR(20) NOT NULL,assets VARCHAR(20) NOT NULL);
+
+CREATE TABLE Account(acc_no INT PRIMARY KEY,branch_name VARCHAR(20) NOT NULL,balance INT NOT NULL CHECK(balance>=2000),FOREIGN KEY(branch_name) REFERENCES Branch(branch_name) ON DELETE CASCADE);
+
+CREATE TABLE Customer(cust_name VARCHAR(20) PRIMARY KEY,cust_street VARCHAR(20) NOT NULL,cust_city VARCHAR(20) NOT NULL);
+
+CREATE TABLE Depositor(cust_name VARCHAR(20) NOT NULL,acc_no INT NOT NULL, FOREIGN KEY(cust_name) REFERENCES Customer(cust_name) ON DELETE CASCADE,FOREIGN KEY(acc_no) REFERENCES Account(acc_no) ON DELETE CASCADE);
+
+CREATE TABLE Loan( loan_no INT PRIMARY KEY,branch_name VARCHAR(20) NOT NULL,amount INT NOT NULL,FOREIGN KEY(branch_name) REFERENCES Branch(branch_name) ON DELETE CASCADE);
+
+CREATE TABLE Borrower( cust_name VARCHAR(20) NOT NULL,loan_no INT NOT NULL,FOREIGN KEY(cust_name)REFERENCES Customer(cust_name) ON DELETE CASCADE,FOREIGN KEY (loan_no) REFERENCES Loan(loan_no) ON DELETE CASCADE);
+
+INSERT INTO Branch VALUES("AKURDI","PUNE","Cash"),("KARAD","SATARA","Cash"),("DADAR","MUMBAI","Cash");
+INSERT INTO Account VALUES(454637,"KARAD",65444),(454638,"AKURDI",47888),(454639,"DADAR",10000);
+INSERT INTO Customer VALUES("KUNAL","VARJE","PUNE"),("SHIVAM","AKURDI","PUNE"),("VINIT","AKURDI","PUNE"),("SANYAM","MALKAPUR","KARAD"),("SWARAJ","KP","NAGAR");
+INSERT INTO Depositor VALUES("KUNAL",454638),("SHIVAM",454637);
+INSERT INTO Loan VALUES(1,"KARAD",76443),(2,"DADAR",87777),(3,"AKURDI",10000),(4,"AKURDI",30000);
+INSERT INTO Borrower VALUES("KUNAL",2),("SHIVAM",1),("VINIT",3),("SANYAM",4);
+
+------------------------------------------------------------------------------------------------------
+
+1) Find the names of all branches in loan relation.
+---> Select branch_name from Loan;
+
+2)Find all loan numbers for loans made at „Wadia College‟ Branch with loan amount > 12000.
+---> select branch_name,loan_no from Loan where branch_name="Akurdi" and amount>1200;
+    SELECT *from Loan WHERE amount >= 50000;
+
+3)Find all customers who have a loan from bank. Find their names,loan_no and loan amount.
+---> Select Borrower.cust_name,Loan.loan_no,Loan.amount from Loan inner join Borrower on Loan.loan_no=Borrower.loan_no;
+
+ select Borrower.cust_name,Loan.loan_no,Loan.ammount from Borrower,Loan where Loan.loan_no=Borrower.loan_no;  
+
+4)List all customers in alphabetical order who have loan from "Wadia College‟ branch.
+-->Select Borrower.cust_name from Borrower inner join Loan on Borrower.loan_no=Loan.loan_no where Loan.branch_name='akurdi' order by
+ Borrower.cust_name asc;
+
+5) Display distinct cities of branch.
+--->Select Distinct branch_city from Branch;
+
+-------------------------------------------------------------------------------------------------------
+
+1)Find all customers who have both account and loan at bank.
+--> select Depositor.cust_name from Depositor,Borrower where Depositor.cust_name=borrower.cust_name;
+    select Depositor.cust_name from Depositor inner join Borrower on       Borrower.cust_name=Depositor.cust_name;
+
+2)Find all customers who have an account or loan or both at bank
+--> Select cust_name from Depositor union select cust_name from Borrower;
+    
+3) Find all customers who have account but no loan at the bank.
+--->  select cust_name from Depositor where cust_name not in(select cust_name from Borrower);
+                                              OR 
+select Depositor.cname from Depositor left join Borrower on Depositor.cname=Borrower.cname where Borrower.cname is null; 
+
+4) Find average account balance at „Wadia College‟ branch
+---> select avg(balance), branch_name from Account where branch_name="Akurdi"
+
+5) Find no. of depositors at each branch
+---> Select count(Distinct cust_name),branch_name from Account natural join Depositor group by branch_name;
+                                           OR
+select branch_name,count(*) from Account group by branch_name; 
+
+----------------------------------------------------------------------------------------------------
+
+1) Find the branches where average account balance > 15000.
+---> select branch_name, avg(balance) from Account group by branch_name having avg(balance)>12000; 
+
+2). Find number of tuples in customer relation.
+--> select count(cust_name) from Customer; 
+                   OR 
+    select count(*) from Customer; 
+
+3)  Calculate total loan amount given by bank
+--->select branch_name,sum(amount) from Loan group by branch_name; 
+              OR 
+    select sum(amount) from Loan; 
+
+4) Delete all loans with loan amount between 1300 and 1500.
+--> delete from Loan where amount>=1300 and amount<=1500; 
+
+5) Find the average account balance at each branch
+---->select avg(balance),branch_name from Account group by branch_name; 
+
+6)Find name of Customer and city where customer name starts with Letter P.
+----> Select cust_name,cust_city from Customer where cust_name like "S%";
+
+------------------------------------------------------------------------------------------------------
+
+
+mysql> use Product;
+
+create table Cust_Master(
+cust_no varchar(20) primary key,
+cust_name varchar(20),
+cust_addr varchar(20)
+);
+
+create table Orders(
+order_no int primary key,
+cust_no varchar(20) not null,
+order_date DATE,
+qty int,
+foreign key(cust_no) references Cust_Master(cust_no)
+);
+
+CREATE TABLE Product(
+product_no INT PRIMARY KEY,
+product_name VARCHAR(50) NOT NULL,
+order_no INT,
+FOREIGN KEY (order_no) REFERENCES Orders(order_no)
+);
+
+mysql> insert into Cust_Master values ("C1002","Sanyam","Banglore"),("C1001","Rohit","Pune"),("C1005","Swaraj","Nagar"),("C1003","Vishal","Manglore"),("C1007","Tejas","Pune"),("C1008","Aadity","Satara");
+
+insert into Orders values (1,"C1001",'2023-01-15',5),(2,"C1002",'2023-02-20',8),(3,"C1003",'2023-03-10',3),(4,"C1005",'2023-11-21',1),(10,"C1007",'2023-11-11'),(8,"C1008",2);
+
+mysql> insert into Product values (501,"A",1),(502,"B",3),(504,"C",2),(503,
+"D",8);
+
+1. List names of customers having 'A' as second letter in their 
+name.
+mysql> select cust_name from Cust_Master where cust_name like '_a%';
+                   or
+mysql> select cust_name from Cust_Master where substring(cust_name,2,1)="a"
+;
+
+2. Display order from Customer no C1002,C1005,C1007 and C1008
+mysql> select * from Orders where cust_no in ("C1002","C1005","C1007","C1008");
+
+3. List Clients who stay in either 'Banglore or 'Manglore
+mysql> select cust_name from Cust_Master where cust_addr in ("Banglore","Manglore");
+              or
+ mysql> select * from Cust_Master where cust_addr in ("Banglore","Manglore");
+
+4. Display name of customers& the product_name they have purchase
+mysql> select Cust_Master.cust_name,Product.product_name
+    -> from Cust_Master
+    -> join Orders on Cust_Master.cust_no = Orders.cust_no
+    -> join Product on Orders.order_no = Product.order_no;
+                     or
+SELECT CM.Cust_name, P.Product_name
+FROM Cust_Master CM, Orders O, Product P
+WHERE CM.Cust_no = O.Cust_no AND O.Order_no = P.Order_no;
+
+5. Create view View1 consisting of Cust_name, Product_name.
+mysql> create view view3 as
+    -> select Cust_Master.cust_name,Product.product_name
+    -> from Cust_Master,Orders,Product
+    -> where Cust_Master.cust_no = Orders.cust_no and Orders.order_no = Product.order_no;
+
+6. Disply product_name and quantity purchase by each customer.
+mysql> select cust_name,product_name,qty
+    -> from Cust_Master,Orders,Product
+    -> where Cust_Master.cust_no = Orders.cust_no and Orders.order_no = Pro
+duct.Order_no;
+
+7. Perform different joint operation.
+mysql> select cust_name
+    -> from Cust_Master
+    -> left join Orders
+    -> on Cust_Master.cust_no = Orders.cust_no;
+
+-------------------------------------------------------------------------------------------------------
+
+-- Create the Employee table
+CREATE TABLE Employee (
+  emp_id INT PRIMARY KEY,
+  employee_name VARCHAR(255) NOT NULL,
+  street VARCHAR(255),
+  city VARCHAR(255) NOT NULL
+);
+
+-- Create the Works table
+CREATE TABLE Works (
+  employee_name VARCHAR(255),
+  company_name VARCHAR(255) NOT NULL,
+  salary DECIMAL(10, 2) NOT NULL,
+  PRIMARY KEY (employee_name, company_name),
+  FOREIGN KEY (employee_name) REFERENCES Employee(employee_name),
+  FOREIGN KEY (company_name) REFERENCES Company(company_name)
+);
+
+-- Create the Company table
+CREATE TABLE Company (
+  company_name VARCHAR(255) PRIMARY KEY,
+  city VARCHAR(255) NOT NULL
+);
+
+-- Create the Manages table
+CREATE TABLE Manages (
+  employee_name VARCHAR(255),
+  manager_name VARCHAR(255) NOT NULL,
+  PRIMARY KEY (employee_name),
+  FOREIGN KEY (employee_name) REFERENCES Employee(employee_name),
+  FOREIGN KEY (manager_name) REFERENCES Employee(employee_name)
+);
+
+
+1) Change the city of employee working with InfoSys to "Bangalore"
+  
+ UPDATE Employee
+SET city = 'Bangalore'
+WHERE employee_name IN (SELECT employee_name FROM Works WHERE company_name = 'InfoSys');
+
+2) Find the names of all employees who earn more than the average salary of all employees of their company. Assume that all people work for at most one company.
+---->
+SELECT W.employee_name
+FROM Works W
+JOIN (
+  SELECT company_name, AVG(salary) AS avg_salary
+  FROM Works
+  GROUP BY company_name
+) AS CompanyAvg
+ON W.company_name = CompanyAvg.company_name
+WHERE W.salary > CompanyAvg.avg_salary;
+
+3)Find the names, street address, and cities of residence for all employees who work for 'TechM' and earn more than $10,000.
+--->SELECT E.employee_name, E.street, E.city
+FROM Employee E
+JOIN Works W ON E.employee_name = W.employee_name
+WHERE W.company_name = 'TechM' AND W.salary > 10000;
+
+4) Change name of table Manages to Management.
+--->ALTER TABLE Manages RENAME TO Management;
+
+5) Create Simple and Unique index on employee table.
+---> CREATE UNIQUE INDEX idx_employee_name ON Employee(employee_name);
+
+6)Create Simple and Unique index on employee table.
+---> CREATE UNIQUE INDEX idx_employee_name ON Employee(employee_name);
+
+7)Display index Information 
+--> SELECT
+    index_name,
+    column_name,
+    non_unique,
+    index_type
+FROM
+    information_schema.statistics
+WHERE
+    table_name = 'Employee';
+
+------------------------------------------------------------------------------------------------------
+
+1. Create a View1 to display List all customers in alphabetical order who have loan from Pune_Station branch.
+
+mysql> create view view1 as
+    -> select branch_name,cust_name
+    -> from loan,borrower
+    -> where loan.loan_no =borrower.loan_no and branch_name="Wadia collage"
+order by cust_name;
+
+2. Create View2 on branch table by selecting any two columns and 
+perform insert update delete operations.
+mysql> create view view2 as
+    -> select branch_name,assets
+    -> from branch;
+
+mysql> insert into view2 values('ABC',999990);
+ysql> delete from view2 where Branch_name='ABC';
+
+
+3. Create View3 on borrower and depositor table by selecting any 
+one column from each table perform insert update delete 
+operations.
+mysql> create view view3 as 
+select Acc_no,Loan_no from Depositor,Borrower 
+where Depositor.Customer_name=Borrower.Customer_name;
+
+4. Create Union of left and right joint for all customers who 
+have an account or loan or both at bank
+mysql> select Account.Acc_no,Account.Balance,Account.Branch_name,Loan.Loan_no from Account LEFT JOIN Loan on Account.Branch_name=Loan.Branch_name;
+
+5. Create Simple and Unique index.
+create unique index index1 on Customer(Customer_name)
+
+####################################### 8 ############################################################
+mysql> use company;
+Database changed
+mysql> create table Companies(comp_id VARCHAR(4) primary key,
+    -> name varchar(255) NOT NULL,cost INT NOT NULL,year INT NOT NULL);
+Query OK, 0 rows affected (1.74 sec)
+
+mysql> create table Orders(comp_id varchar(4),
+    -> domain varchar(255) NOT NULL,
+    -> quantity INT NOT NULL,
+    -> FOREIGN KEY (comp_id) REFERENCES Companies(comp_id));
+Query OK, 0 rows affected (0.67 sec)
+
+mysql> insert into Companies(comp_id,name,cost,year) VALUES
+    -> ('C001','ONGC',2000,2010),
+    -> ('C002','HPCL',2500,2012),
+    -> ('C005','IOCL',1000,2014),
+    -> ('C006','BHEL',3000,2015);
+Query OK, 4 rows affected (0.44 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> insert into Orders(comp_id,domain,quantity)
+    -> VALUES
+    -> ('C001','Oil',109),
+    -> ('C002','Gas',121);
+Query OK, 2 rows affected (2.06 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> insert into Orders(comp_id,domain,quantity)
+    -> VALUES('C005','Telecom',115);
+
+Q.1]  Find names, costs, domains and quantities for companies using inner join.
+mysql> select name,cost,domain,quantity
+    -> from Companies
+    -> inner join Orders
+    -> on Orders.comp_id=Companies.comp_id;
+
+Q.2] Find names, costs, domains and quantities for companies using left outer join.
+mysql> select name,cost,domain,quantity
+    -> from Companies
+    -> left join Orders
+    -> on Orders.comp_id=Companies.comp_id;
+
+
+Q.3] Find names, costs, domains and quantities for companies using right outer join.
+mysql> select name,cost,domain,quantity
+    -> from Companies
+    -> right join orders
+
+Q.4] Find names, costs, domains and quantities for companies using Union operator.
+mysql> select name,cost from companies
+    -> join Orders on Orders.comp_id=Companies.comp_id
+    -> union
+    -> select domain,quantity from Orders
+    -> join Companies on Orders.comp_id=Companies.comp_id;
+
+Q.5] Create View View1 by selecting both tables to show company name and quantities.
+
+Q.6] Display content of View1.
+mysql> select * from View1;
+
+
+################################## 9###################################################################
+
+
+mysql> create database cust;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use cust;
+Database changed
+mysql> CREATE TABLE CUSTOMERS (
+    ->     CNo INT PRIMARY KEY,
+    ->     Cname VARCHAR(50) NOT NULL,
+    ->     Ccity VARCHAR(50),
+    ->     CMobile VARCHAR(15)
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> CREATE TABLE ITEMS (
+    ->     INo INT PRIMARY KEY,
+    ->     Iname VARCHAR(50) NOT NULL,
+    ->     Itype VARCHAR(50),
+    ->     Iprice DECIMAL(10, 2),
+    ->     Icount INT
+    -> );
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> CREATE TABLE PURCHASE (
+    ->     PNo INT PRIMARY KEY,
+    ->     Pdate DATE,
+    ->     Pquantity INT,
+    ->     Cno INT,
+    ->     INo INT,
+    ->     FOREIGN KEY (Cno) REFERENCES CUSTOMERS(CNo),
+    ->     FOREIGN KEY (INo) REFERENCES ITEMS(INo)
+    -> );
+
+mysql> INSERT INTO CUSTOMERS (CNo, Cname, Ccity, CMobile)
+    -> VALUES
+    ->     (1, 'Gopal', 'CityA', '1234567890'),
+    ->     (2, 'Maya', 'CityB', '9876543210');
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO ITEMS (INo, Iname, Itype, Iprice, Icount)
+    -> VALUES
+    ->     (101, 'Pen', 'Stationary', 50.00, 100),
+    ->     (102, 'Notebook', 'Stationary', 200.00, 50),
+    ->     (103, 'Marker', 'Stationary', 500.00, 30),
+    ->     (104, 'Stapler', 'Stationary', 1200.00, 20);
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO PURCHASE (PNo, Pdate, Pquantity, Cno, INo)
+    -> VALUES
+    ->     (1, '2023-01-15', 5, 1, 101),
+    ->     (2, '2023-02-20', 2, 2, 103),
+    ->     (3, '2023-03-10', 3, 1, 102);
+Query OK, 3 rows affected (0.00 sec)
+
+1. List all stationary items with price between 400/- to 1000/
+mysql> select * from ITEMS where Iprice between 400 and 1000;
+                            or
+SELECT *
+FROM ITEMS
+WHERE Itype = 'Stationary' AND Iprice BETWEEN 400 AND 1000;
+
+2. Change the mobile number of customer “Gopal”
+mysql> update CUSTOMERS
+    -> set CMobile=9322720904
+    -> where Cname="Gopal";
+
+3. Display the item with maximum price
+mysql> SELECT *
+    -> FROM ITEMS
+    -> WHERE Iprice = (SELECT MAX(Iprice) FROM ITEMS);
+
+4. Display all purchases sorted from the most recent to the oldest.
+ SELECT *
+FROM PURCHASE
+ORDER BY Pdate DESC;
+
+5. Count the number of customers in every city
+mysql> select Ccity,count(*)
+    -> from CUSTOMERS
+    -> group by Ccity;
+
+6. Display all purchased quantity of Customer Maya
+SELECT P.Pquantity, I.Iname
+FROM PURCHASE P, ITEMS I, CUSTOMERS C
+WHERE P.INo = I.INo
+AND P.Cno = C.CNo
+AND C.Cname = 'Maya';
+
+7. Create view which shows Iname, Price and Count of all stationary items in descending order of price.
+
+CREATE VIEW StationaryItemsView AS
+SELECT Iname, Iprice AS Price, Icount AS Count
+FROM ITEMS
+WHERE Itype = 'Stationary'
+ORDER BY Iprice DESC;
+
+
+-------------------------------------------------------------------------------------------------------
+
+Keys are used to specify the tuples distinctly in the given relation. 
+
+1) Super Key(SK) :   
+      It is a set of one or more attributes within a table that can uniquely identify each record within a table
+
+2) Candidate Key(CK) :  
+The candidate key is a subset of superset.  In other words candidate key is a single attribute or least or minimal combination of attributes that uniquely identify each record in the table. 
+
+3) Primary Key(PK) :  
+The primary key is a candidate key chosen by the database designer to identify the tuple in the relation uniquely
+
+4) Foreign key= A primary key is a unique identifier for each record in a table. A foreign key establishes a relationship between tables by referencing the primary key of another table.
+
+Thus every candidate key is a superkey but every superkey is not a candidate key
+
+1) DDL(Data Definition Language)--> Uesd to define database structure 
+     create,drop,alter,tuncate
+2) DML(Data Manipulation Language)--> USed to modify database 
+     select,Insert,updae,delete
+3) DCL(Data Control Language)-->Used to grant and take back authority from any database user 
+    grant, revoke
+4) TCL(Transcation Control Language)--> Use with DML commands like Insert,Delete,Update only these operations are automatically commiteed in database that's why they cannot be used while creating tables or dropping then here are some commands
+       commit , rollback
+
+
+
+#Index is a pointer to the data in the database table. These are also called as lookup 
+tables. With the help of indexing data retrieval becomes fast and efficient. The concept of 
+index is just similar to the index at the back of the book which contains the keywords. 
+Using these keywords it is easy to locate the desired record quickly from the database 
+
+
+# CREATE INDEX index_name ON table_name;
+# CREATE UNIQUE INDEX index_name 
+ON table_name (column1, column2, ...); 
+# DROP INDEX index_name 
+
+#Aggregation -->
+
+SELECT SUM(column_name)
+FROM table_name
+WHERE condition;
+
+
+SELECT Name, AVG(Marks) 
+FROM Student,Marks 
+WHERE Student.Roll_No=Marks.Roll_No 
+
+(INNER) JOIN: Returns records that have matching values in both tables
+LEFT (OUTER) JOIN: Returns all records from the left table, and the matched records from the right table
+RIGHT (OUTER) JOIN: Returns all records from the right table, and the matched records from the left table
+FULL (OUTER) JOIN: Returns all records when there is a match in either left or right table
+
+#Syantax-->
+
+SELECT column_name(s)
+FROM table1
+INNER JOIN table2
+ON table1.column_name = table2.column_name;
+
+Union--->SELECT column_name(s) FROM table1 UNION ALL SELECT column_name(s) FROM table2;\
+
+
+
+View --> Views in SQL are kind of virtual tables.  We can create a view by selecting fields from one or more tables present in the database. 
+Syntax-->
+   CREATE VIEW name_of_view AS 
+ SELECT column1,column2,… 
+ FROM table_name1,table_name2,… 
+ WHERE condition; 
+
+DROP VIEW view_name;
+
+UPDATE < view_name >  
+ SET<column1>=<value1>,<column2>=<value2>,.... 
+ WHERE <condition>; 
+
+Rules for updating the views 
+The view can be updated in following conditions : 
+(1) The view can be defined based on one and only one table. 
+(2) The SELECT statement should not have DISTINCT keyword. 
+(3) The view should not have all NOT NULL values. 
+(4) The view should not be created from nested and complex queries. 
+(5) The SELECT statement which is used to create the view should not include 
+GROUP BY clause or ORDER BY clause. 
+(6) The view should not have any field made out of aggregate functions. 
+(7) Any selected output fields of the view must not use constants, strings or value 
+expressions.
+------------------------------------------------------------------------------------------------------
+######################################################################################################
+------------------------------------------------------------------------------------------------------
+
+
+SQL> create table Area(radius number(20),area number(20));
+
+Table created.
+
+SQL> declare
+   r number(20);
+   a number(20);
+   pi constant number :=3.14;
+   begin
+   for r in 3..8 loop
+   a:=pi*r*r;
+   insert into Area values(r,a);
+   end loop;
+   end;
+   
+
+ select *from Area;
+
+
+------------------------------------------------------------------------------------------------------
+
+
+
+SQL> create table Borrower(Rollno number(20),Name varchar2(20),Dateofissue date,NameofBook varchar2(20),Status char);
+
+Table created.
+
+SQL> insert into Borrower values(100,'Pratik',to_date('15112023','DDMMYYYY'),'TOC','I');
+
+SQL> insert into Borrower values(102,'Shishir',to_date('10102023','DDMMYYYY'),'DBMS','I');
+
+SQL> insert into Borrower values(103,'Nishant',to_date('08112023','DDMMYYYY'),'DSA','I');
+
+SQL> insert into Borrower values(104,'Kunal',to_date('05112023','DDMMYYYY'),'MP','I');
+
+SQL> insert into Borrower values(105,'Gunjan',to_date('25092023','DDMMYYYY'),'SPOS','I');
+
+SQL> create table fine(Roll_no number(20),fDate date,Amt number(20));
+
+
+DECLARE
+   p_Rollno      NUMBER(10);
+   p_nameofbook  VARCHAR2(20);
+   p_dateofissue DATE;
+   currentdate   DATE;
+   noofdays      NUMBER(2);
+   amount        NUMBER(20);
+   nodata        EXCEPTION;
+BEGIN
+   p_Rollno := &Rollno;
+   p_nameofbook := '&NameofBook';
+   currentdate := TRUNC(SYSDATE);
+
+   IF p_Rollno <= 0 THEN
+      RAISE nodata;
+   END IF;
+
+   SELECT Dateofissue INTO p_dateofissue
+   FROM Borrower
+   WHERE Rollno = p_Rollno AND NameofBook = p_nameofbook;
+
+   SELECT TRUNC(SYSDATE) - p_dateofissue INTO noofdays FROM dual;
+
+   DBMS_OUTPUT.PUT_LINE('No of Days:' || noofdays);
+
+   IF noofdays > 30 THEN
+      amount := noofdays * 50;
+   ELSIF noofdays >= 15 AND noofdays <= 30 THEN
+      amount := noofdays * 5;
+   END IF;
+
+   IF amount > 0 THEN
+      INSERT INTO fine VALUES (p_Rollno, SYSDATE, amount);
+   END IF;
+
+   UPDATE Borrower
+   SET Status = 'R'
+   WHERE Rollno = p_Rollno;
+
+EXCEPTION
+   WHEN nodata THEN
+      DBMS_OUTPUT.PUT_LINE('!!!Roll number not found!!!');
+END;
+
+
+
+FROM dual: The DUAL table is a one-row, one-column table present in Oracle databases. It is often used as a dummy table when you need to perform operations that do not involve any specific table.
+------------------------------------------------------------------------------------------------------
+
+ create table oldtb(id number,name varchar(20));
+
+ insert into oldtb values(1,'Pratik');
+ insert into oldtb values(3,'Manoj');
+ insert into oldtb values(5,'Nishant');
+
+ create table newtb(id number,name varchar(20));
+
+ insert into newtb values(2,'Gunjan');
+ insert into newtb values(4,'Shishir');
+
+
+DECLARE
+   rollno NUMBER;
+   flag INT := 0;
+   CURSOR c_roll (p_rollno NUMBER) IS
+      SELECT *
+      FROM oldtb
+      WHERE id NOT IN (SELECT id FROM newtb WHERE newtb.id = oldtb.id);
+
+   info newtb%ROWTYPE;
+BEGIN
+   rollno := &rollno;
+   
+   OPEN c_roll(rollno);
+   
+   LOOP
+      FETCH c_roll INTO info;
+      EXIT WHEN c_roll%NOTFOUND;
+      
+      IF (info.id = rollno) THEN
+         INSERT INTO newtb VALUES (info.id, info.name);
+         flag := 1;
+      END IF;
+   END LOOP;
+   
+   IF (c_roll%ROWCOUNT = 0 OR flag = 0) THEN
+      DBMS_OUTPUT.PUT_LINE('This record already exists in the new table.');
+   ELSE
+      DBMS_OUTPUT.PUT_LINE('Record updated in the new table!');
+   END IF;
+
+   CLOSE c_roll;
+END;
+
+
+#####################################################################################################3#
+
+
+create table student(rollno number(20),name varchar2(20),att number(10),status varchar2(20));
+
+insert into student(rollno,name,att)values(100,'Prasad',80);
+
+insert into student(rollno,name,att)values(101,'Pratik',65);
+
+insert into student(rollno,name,att)values(102,'Nishant',74);
+
+insert into student(rollno,name,att)values(103,'Aysush',90);
+
+insert into student(rollno,name,att)values(104,'Dinesh',45);
+
+insert into student(rollno,name,att)values(105,'Shishir',95);
+
+declare
+ p_rollno number(20);
+ p_att number(20);
+ p_status varchar2(20);
+begin
+ p_rollno := &rollno;
+
+ select att,status into p_att,p_status
+ from student 
+ where rollno=p_rollno;
+ 
+ if p_att < 75 then 
+   dbms_output.put_line('Term is not granted');
+   p_status:='Detained';
+ else
+   dbms_output.put_line('Term granted');
+   p_status:='Not detained';
+ end if;
+
+ update student set status=p_status
+ where rollno=p_rollno;
+
+exception
+  when no_data_found then
+  dbms_output.put_line('Invalid Roll number.Student not found.');
+  end;
+##################################################################################################################################3#
+
+
+
+ create table emp (emp_no number(20),salary number(20));
+
+ insert into emp values(1,10000);
+ insert into emp values(2,25000);
+ insert into emp values(3,55000);
+
+ select *from emp;
+
+    EMP_NO     SALARY
+---------- ----------
+         1      10000
+         2      25000
+         3      55000
+
+create table increment_salary(emp_no number(20),salary number(20));
+
+
+DECLARE
+    v_avg_salary NUMBER;
+
+    CURSOR c_emp IS
+        SELECT emp_no, salary
+        FROM emp
+        WHERE salary < (SELECT AVG(salary) FROM emp);
+
+BEGIN
+    -- Calculate the average salary of the organization
+    SELECT AVG(salary)
+    INTO v_avg_salary
+    FROM emp;
+
+    -- Loop through employees with salary less than the average
+    FOR emp_rec IN c_emp LOOP
+        -- Calculate the salary increment (10% of existing salary)
+        DECLARE
+            v_increment_salary NUMBER;
+        BEGIN
+            v_increment_salary := emp_rec.salary * 0.10;
+
+            -- Update the salary of the employee
+            UPDATE emp
+            SET salary = emp_rec.salary + v_increment_salary
+            WHERE emp_no = emp_rec.emp_no;
+
+            -- Insert a record in the increment_salary table
+            INSERT INTO increment_salary(emp_no, salary)
+            VALUES (emp_rec.emp_no, v_increment_salary);
+
+            -- Commit the changes
+            COMMIT;
+
+            DBMS_OUTPUT.PUT_LINE('Salary updated for Employee ' || emp_rec.emp_no || '. New salary: ' || (emp_rec.salary + v_increment_salary));
+        EXCEPTION
+            WHEN OTHERS THEN
+                DBMS_OUTPUT.PUT_LINE('Error updating salary for Employee ' || emp_rec.emp_no || ': ' || SQLERRM);
+        END;
+    END LOOP;
+END;
+
+
+
+#####################################################################################################################################
+
+
+
+create table stud_marks(roll_no number(20),name varchar2(20),total_marks number(20));
+
+insert into stud_marks values(1,'Pratik',1200);
+insert into stud_marks values(2,'Nishant',950);
+insert into stud_marks values(3,'Dinesh',850);
+insert into stud_marks values(4,'Arjun',800);
+insert into stud_marks values(5,'Manoj',600);
+
+create table result(roll_no number(20),name varchar2(20),class varchar2(20));
+
+
+CREATE OR REPLACE PROCEDURE proc_grade
+(
+  var_roll_no IN number(20),
+  p_roll_no OUT stud_marks.roll_no%TYPE,
+  p_name OUT stud_marks.name%TYPE,
+  p_total_marks OUT stud_marks.total_marks%TYPE
+)
+AS
+BEGIN
+  SELECT roll_no, name, total_marks INTO p_roll_no, p_name, p_total_marks
+  FROM stud_marks
+  WHERE roll_no = var_roll_no;
+
+  IF p_total_marks <= 1500 AND p_total_marks >= 990 THEN
+    INSERT INTO result VALUES (p_roll_no, p_name, 'Distinct');
+  ELSIF p_total_marks <= 989 AND p_total_marks >= 900 THEN
+    INSERT INTO result VALUES (p_roll_no, p_name, 'First Class');
+  ELSIF p_total_marks <= 899 AND p_total_marks >= 825 THEN
+    INSERT INTO result VALUES (p_roll_no, p_name, 'HSC');
+  ELSE
+    INSERT INTO result VALUES (p_roll_no, p_name, 'Fail');
+  END IF;
+
+EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+    DBMS_OUTPUT.PUT_LINE('Roll no ' || var_roll_no || ' not found');
+END;
+
+
+declare
+  var_roll_no number(20);
+  p_roll_no stud_marks.roll_no%type;
+  p_name stud_marks.name%type;
+  p_total_marks stud_marks.total_marks%type;
+begin
+  var_roll_no:=&var_roll_no;
+  proc_grade(var_roll_no,p_roll_no,p_name,p_total_marks);
+end;
+
+######################################################################################################################################
+
+# Function -->
+
+CREATE OR REPLACE FUNCTION Age_calc(dat IN date,d OUT number,m OUT number) RETURN number AS y number;
+BEGIN d:=sysdate-dat;
+y:=d/365;
+y:=trunc(y);
+m:=(d-y*365)/30;
+M:=trunc(m);
+d:=trunc(d-y*365-m*30);
+RETURN y;
+END;
+/
+
+/*This function calculates the age based on the input date (dat).
+It uses the current date (sysdate) to calculate the difference in days (d).
+It then calculates the number of years (y) by dividing the days by 365.
+The remaining days are used to calculate the number of months (m).
+The final result is returned as the number of years, and the number of days and months are provided as OUT parameters.*/
+
+
+
+DECLARE D varchar2(20):='r';
+P1 NUMBER:=&day_of_birth;
+P2 NUMBER:=&month_of_birth;
+P3 NUMBER:=&year_of_birth;
+BEGIN D:=to_char(p1)||'-'||to_char(p2)||'-'||to_char(p3);
+P1:=AGE_CALC(to_date(d,'dd-mm-yyyy'),P2,P3);
+DBMS_OUTPUT.PUT_LINE('DAYS: '||P2||' MONTHS: '||P3||' YEARS: '||P1);
+END;
+/
+
+/*In this anonymous block, variables D, P1, P2, and P3 are declared.
+The input date is constructed as a string (D) using the provided day, month, and year variables.
+The AGE_CALC function is called with the constructed date and the month and year variables.
+The result is displayed using DBMS_OUTPUT.PUT_LINE.
+Usage:
+When you execute the anonymous block, it prompts you to enter values for &day_of_birth, &month_of_birth, and &year_of_birth.
+The block then calculates the age using the Age_calc function and displays the result in years, months, and days using DBMS_OUTPUT.PUT_LINE.*/
+
+######################################################################################################################################
+
+{NOTE----> For Update and delete use :old  AND For Insert use :new)}
+
+
+create table lib(rollno number(20),name varchar2(20),dateofissue date,nameofbook varchar2(20),status char(10));
+
+create table lib_audit (rollno number(20),name varchar2(20),dateofissue date,nameofbook varchar2(20),status char(10),ts timestamp,command varchar2(10));
+
+insert into lib values(101,'Pratik',to_date('20101023','DDMMYYYY'),'DBMS','I');
+
+insert into lib values(102,'Shishir',to_date('12092023','DDMMYYYY'),'MP','I');
+
+insert into lib values(103,'Manoj',to_date('15082023','DDMMYYYY'),'CNS','I');
+
+insert into lib values(104,'Anil',to_date('17111023','DDMMYYYY'),'TOC','I');
+
+insert into lib values(105,'Rohit',to_date('19102023','DDMMYYYY'),'SPOS','I');
+
+
+
+
+CREATE OR REPLACE TRIGGER T1
+  AFTER INSERT OR DELETE OR UPDATE
+  ON lib
+  FOR EACH ROW
+BEGIN
+  IF UPDATING THEN
+    INSERT INTO lib_audit VALUES (:old.rollno, :old.name, :old.dateofissue, :old.nameofbook, :old.status, systimestamp, 'UPDATE');
+  ELSIF INSERTING THEN
+    INSERT INTO lib_audit VALUES (:new.rollno, :new.name, :new.dateofissue, :new.nameofbook, :new.status, systimestamp, 'INSERT');
+  ELSIF DELETING THEN 
+    INSERT INTO lib_audit VALUES (:old.rollno, :old.name, :old.dateofissue, :old.nameofbook, :old.status, systimestamp, 'DELETE');
+  END IF;
+END;
+
+
+
+1) insert into lib values(106,'Amol',to_date('18112023','DDMMYYYY'),'IOT','I');
+2)update lib set nameofbook='Mysql' where rollno=101;
+3)delete from lib where rollno=102;
+
+
+####################################################################################################################################
+
+
+
+23) Trigger -->
+
+CREATE OR REPLACE TRIGGER customers_salary_diff_trigger
+BEFORE INSERT OR UPDATE OR DELETE
+ON customers
+FOR EACH ROW
+DECLARE
+    v_old_salary customers.salary%TYPE;
+    v_new_salary customers.salary%TYPE;
+    v_salary_diff NUMBER;
+BEGIN
+    -- Capture the old and new salary values
+    IF UPDATING THEN
+        v_old_salary := :OLD.salary;
+        v_new_salary := :NEW.salary;
+    ELSIF INSERTING THEN
+        v_new_salary := :NEW.salary;
+    ELSIF DELETING THEN
+        v_old_salary := :OLD.salary;
+    END IF;
+
+    -- Calculate the salary difference
+    IF v_old_salary IS NOT NULL AND v_new_salary IS NOT NULL THEN
+        v_salary_diff := v_new_salary - v_old_salary;
+        DBMS_OUTPUT.PUT_LINE('Salary difference: ' || v_salary_diff);
+    ELSIF v_old_salary IS NULL AND v_new_salary IS NOT NULL THEN
+        DBMS_OUTPUT.PUT_LINE('New Salary: ' || v_new_salary);
+    ELSIF v_old_salary IS NOT NULL AND v_new_salary IS NULL THEN
+        DBMS_OUTPUT.PUT_LINE('Old Salary: ' || v_old_salary);
+    END IF;
+END;
+
+
+24) Trigger-->
+
+CREATE OR REPLACE TRIGGER emp_salary_trigger
+AFTER INSERT OR UPDATE OR DELETE
+ON Emp
+FOR EACH ROW
+DECLARE
+    v_new_salary Emp.Emp_salary%TYPE;
+BEGIN
+    IF INSERTING AND :NEW.Emp_salary < 50000 THEN
+        -- Insert into Tracking table for new salary less than Rs. 50,000
+        INSERT INTO Tracking (Emp_no, Emp_salary)
+        VALUES (:NEW.Emp_no, :NEW.Emp_salary);
+
+        DBMS_OUTPUT.PUT_LINE('New salary inserted: ' || :NEW.Emp_salary);
+    ELSIF UPDATING AND :NEW.Emp_salary < 50000 THEN
+        -- Insert into Tracking table for updated salary less than Rs. 50,000
+        INSERT INTO Tracking (Emp_no, Emp_salary)
+        VALUES (:NEW.Emp_no, :NEW.Emp_salary);
+
+        DBMS_OUTPUT.PUT_LINE('Updated salary: ' || :NEW.Emp_salary);
+    END IF;
+
+    -- Additional logic for DELETE operation if needed
+    IF DELETING THEN
+        DBMS_OUTPUT.PUT_LINE('Employee deleted.');
+    END IF;
+END;
+
+
+
+
+ PL/SQL stands for Procedural Language extensions to the Structured Query 
+Language (SQL).  PL/SQL is a combination of SQL along with the procedural features of programming languages
+
+
+1) Declaration section 
+A PL/SQL block has a declaration section where you declare variables, allocate 
+memory for cursors and define data types. 
+
+2) Executable section 
+A PL/SQL block has an executable section. An executable section starts with the 
+keyword BEGIN and ends with the keyword END. The executable section must have a 
+least one executable statement, even if it is the NULL statement which does nothing
+
+3) Exception-handling section 
+A PL/SQL block has an exception-handling section that starts with the keyword 
+EXCEPTION. The exception-handling section is where you catch and handle exceptions 
+raised by the code in the execution section. 
+
+
+
+ Stored procedure is a type of subprogram in PL/SQL block. It is a group of 
+statements that can be called by its name.  
+ This is a subprogram that does not return a value directly. 
+ A procedure is created with the CREATE OR REPLACE PROCEDURE statement. 
+
+ CREATE or REPLACE Procedure Procedure_Name 
+[(Parameter_Name [IN | OUT | IN OUT ] Type […])] 
+[IS | AS] 
+BEGIN 
+Procedure_Body 
+END; 
+
+Execute [Procedure-Name]; 
+
+
+
+{  procedure-name specifies the name of the procedure.
+ [OR REPLACE] option allows the modification of an existing procedure.
+The optional parameter list contains name, mode and types of the parameters. IN represents the value that will be passed from outside and OUT represents the parameter that will be used to return a value outside of the procedure.
+procedure-body contains the executable part.
+The AS keyword is used instead of the IS keyword for creating a standalone procedure
+
+}
+
+IN represents that argument value will be passed from outside the procedure. It 
+is a read-only parameter. Parameters are passed by reference. Inside the 
+procedure or a sub-program, an IN Parameter acts as a constant. It cannot be 
+assigned a value. It is the default mode of parameter passing. 
+o An OUT parameter returns a value to the calling program. OUT represents that 
+this parameter will be used to return a value outside of the procedure.  
+o An IN OUT parameter passes an initial value to the sub-program and returns an 
+updated value to the caller. We can read and write values using this parameter.
+
+
+Functions 
+
+Stored function is a named block or subprogram in PL/SQL. 
+ In PL/SQL, a function takes one or more parameter and returns one 
+
+CREATE [Or REPLACE] Function Function_Name 
+[(Parameter,..)] 
+Return Datatype 
+[IS | AS] 
+[Declaration Section] 
+BEGIN
+[Executable Section] 
+END Function_Name;
+
+function-name specifies the name of the function.
+[OR REPLACE] option allows the modification of an existing function.
+The optional parameter list contains name, mode and types of the parameters. IN represents the value that will be passed from outside and OUT represents the parameter that will be used to return a value outside of the procedure.
+The function must contain a return statement.
+The RETURN clause specifies the data type you are going to return from the function.
+function-body contains the executable part.
+The AS keyword is used instead of the IS keyword for creating a standalone function.
+
+
+Functions − These subprograms return a single value; mainly used to compute and return a value.
+
+Procedures − These subprograms do not return a value directly; mainly used to perform an action.
+
+
+
+@ Cursors -->
+     When an SQL statement is processed, Oracle creates a memory area known as 
+context area. A cursor is a pointer to this context area. 
+     t contains all information needed for processing the statement.  
+ In PL/SQL, the context area is controlled by cursor.  
+ A cursor contains information on a SELECT statement and the rows of data 
+accessed by it. 
+ The cursor is used to fetch and process the rows  returned by SQL statement one at 
+a time. 
+
+1) Implicit cursor 
+ Whenever Oracle executes an SQL statement such as SELECT INTO, INSERT, 
+UPDATE and DELETE, it creates an implicit cursor. 
+ The Implicit Cursor is the Default Cursor in PL/SQL block. 
+
+(2) Explicit cursor 
+ Explicit cursors are used when you are executing a SELECT statement query that 
+will return more than one row.  
+ Cursors can process one record at a given point of time even though it stores more 
+than one record.
+1)Declaring the cursor for initializing the memory
+2)Opening the cursor for allocating the memory
+3)Fetching the cursor for retrieving the data
+4)Closing the cursor to release the allocated memory
+
+#Syntax--> CURSOR cursor_name IS select_statement;
+             OPEN c_customers;
+               FETCH c_customers INTO c_id, c_name, c_addr;
+                   CLOSE c_customers;
+
+
+
+
+ @ Triggers 
+ 
+ Trigger is something that is invoked automatically when some event occurs. 
+ PL/SQL triggers are block structures or pre-defined programs, which may be in
+built or even explicitly developed by the programmers for a particular task. 
+ Trigger is stored into database and invoked repeatedly, when specific condition 
+match. 
+ Triggers are stored programs, which are automatically executed or fired when some 
+event occurs. 
+ Triggers are associated with response-based events such as a,  
+o Database Definition Language (DDL) statement such as CREATE, DROP or 
+ALTER . 
+o Database Manipulation Language (DML) statement such as UPDATE, INSERT or 
+DELETE.  
+o Any other database operation such as a Startup, Shutdown, Logging in and 
+Logging Out.
+ 
+Syntax 
+CREATE OR REPLACE TRIGGER Trigger_Name 
+BEFORE or AFTER or INSTEAD OF 
+INSERT or UPDATE or DELETE 
+of Column_Name 
+ON Table_Name 
+[REFERENCING OLD AS O New AS N] 
+FOR EACH ROW 
+WHEN (Condition) 
+DECLARE 
+Declaration Section 
+BEGIN 
+Execution Section 
+END; 
+

@@ -1,0 +1,565 @@
+
+db.Employee.insertOne({name:{Fname:'Vinit',Lname:'Shighavi'},CName:'TCS',Salary:35000,Designation:'Tester',Age:22,Expertise:'Java,C++,Mysql,PHP',DOB:'13SEP2002',EmailId:'vansh670@gmial.com',contact:'9877645389',Address:{PAddr:'Nagar',LAddr:'Punestation'}})   
+
+db.Employee.insertMany([{name:{Fname:'Tanay',Lname:'Partap'},CName:'TCS',Salary:25000,Designation:'Programmer',Age:19,Expertise:'Javascript,Python,java',DOB:'25DEC2003',EmailId:'Tanay67@gmial.com',contact:'9856749034',Address:{PAddr:'Delhi',LAddr:'Pune'}},
+{name:{Fname:'Shivam',Lname:'Rathode'},CName:'Google',Salary:50000,Designation:'Devloper',Age:20,Expertise:'HTML,CSS,JAVASCRIPT',DOB:'03JAN2000',EmailId:'rathode45@gmial.com',contact:'9987645690',Address:{PAddr:'Yavatmal',LAddr:'Akurdi'}},{name:{Fname:'Nishant',Lname:'Gore'},CName:'Infosys',Salary:40000,Designation:'Tester',Age:25,Expertise:'Python,C#,Mysql,Ruby',DOB:'15Aug1998',EmailId:'Gore657@gmial.com',contact:'8899456738',Address:{PAddr:'Daund',LAddr:'Bund Garden'}},
+{name:{Fname:'Swaraj',Lname:'Giri'},CName:'Infosys',Salary:55000,Designation:'Programmer',Age:26,Expertise:'Mongodb,Mysql,Cassandra',DOB:'25Jul1997',EmailId:'Giri18@gmial.com',contact:'9075864356',Address:{PAddr:'Nagar',LAddr:'Yerwada'}},
+{name:{Fname:'Prasad',Lname:'Mahajan'},CName:'TCS',Salary:30000,Designation:'Tester',Age:25,Expertise:'Mongodb,Mysql,Cassandra,c#,Ruby,Perl',DOB:'02NOV1996',EmailId:'Mahajan69@gmial.com',contact:'9075667070',Address:{PAddr:'Jalgaon',LAddr:'Punestation'}}
+])
+
+-------------------------------------------------------------------------------------------------------
+
+1) Select all documents where the Designation field has the value "Programmer" and the value of the salary field is greater than 30000.
+-->  db.Employee.find({designation:"programmer",salary:{$gt:30000}}).pretty()
+
+2)Creates a new document if no document in the employee collection contains{Designation: "Tester", Company_name: "TCS", Age: 25}
+---> db.Employee.update({Designation:"Tester",CName:"TCS"},{$set:{Age:25}},{$upsert:true})
+
+3)Increase salary of each Employee working with “Infosys" 10000. 
+--> db.Employee.updateMany({CName:"Infosys"},{$inc:{Salary:1000}},{multi:true})
+
+4)Finds all employees working with "TCS" and reduce their salary by 5000.
+--> db.Employee.updateMany({CName:"TCS"},{$inc:{Salary:-5000}})
+
+5)Return documents where Designation is not equal to "Tester".
+-->db.Employee.find({Designation:{$ne:"Tester"}})
+
+6). Find all employee with Exact Match on an Array having Expertise: ['Mongodb','Mysql','Cassandra']
+---> db.Employee.find({Expertise:['Mongodb','Mysql','Cassandra']})
+
+------------------------------------------------------------------------------------------------------
+
+1) Find name of Employee where age is less than 30 and salary more than 50000.
+-->  db.Employee.find({$and:[{Age:{$lt:30}},{Salary:{$gt:50000}}]})
+
+2) Creates a new document if no document in the employee collection contains
+ {Designation: "Tester", Company_name: "TCS", Age: 25}
+---> db.Employee.update({Designation:"Tester",CName:"TCS"},{$set:{Age:25}},{$upsert:true})
+
+3) Selects all documents in the collection where the field age has a value less than 30 or the value of the salary field is greater than 40000
+---> db.Employee.find({$or:[{Age:{$lt:30}},{Salary:{$gt:40000}}]})
+
+4) Find _id, Designation, Address and Name from all documents where Company_name is "Infosys".
+--> db.Employee.find({CName:"Infosys"},{_id:1,Designation:1,Address:1,name:1})
+
+5) Display only FName and LName of all Employees
+--> db.Employee.find({name:{Fname:1,Lname:1}})
+
+-------------------------------------------------------------------------------------------------------
+
+1) Creates a new document if no document in the employee collection contains {Designation: "Tester", Company_name: "TCS", Age: 25}
+--> db.Employee.update({Designation:"Tester",CName:"TCS"},{$set:{Age:25}},{$upsert:true})
+
+2)Finds all employees working with Company_name: "TCS" and increase their salary by 2000.
+--> db.Employee.updateMany({CName:"TCS"},{$inc:{Salary:2000}})
+
+3)Matches all documents where the value of the field Address is an embedded document that contains only the field city with the value "Pune" and the field Pin_code with the value "411001"
+--> db.emp.find( {"Address.PAddress":"Pune"," Address.PinCode":"411001"} ).pretty()
+
+4) Find employee details who are working as "Developer" or "Tester".
+---> db.Employee.find({$or:[{Designation:"Devloper"},{Designation:"Tester"}]})
+---> db.Employee.find({Designation:{$in:['Developer','Tester']}})
+
+5) Drop Single documents where designation="Developer"
+---> db.Employee.remove({Designation:"Devloper"},1) 
+
+6) Count number of documents in employee collection.
+---> db.Employee.count()
+
+
+------------------------------------------------------------------------------------------------------
+
+1)  Using aggregation Return Designation with Total Salary is Above 200000.
+-->  db.Employee.aggregate({$group:{_id:"$Designation",totalSal:{$sum:"$Salary"}}},{$match:{totalSal:{$gt:20000}}})
+
+2)Using Aggregate method returns names and _id in upper case and in alphabetical order.
+-->  db.Employee.aggregate([
+  {
+    $project: {
+      _id: 1,
+      'name.Fname': { $toUpper: '$name.Fname' },
+      'name.Lname': { $toUpper: '$name.Lname' }
+    }
+  },
+  {
+    $sort: { 'name.Fname': 1 }
+  }
+]);
+
+3) Using aggregation method find Employee with Total Salary for Each City with Designation="DBA".
+---> db.Employee.aggregate({$match:{Designation:"Tester"}},{$group:{_id:"$Address",totalSal:{$sum:"$Salary"}}})
+                               OR
+ Find Total Salary of Employee with Designation="DBA" for Each Company .
+--> db.Employee.aggregate([{$match:{Designation:"DBA"}}, {$group:{_id:"$Company_name",totalSal:$sum:"$Salary"}}}]) 
+
+4)Create Single Field Indexes on Designation field of employee collection.
+--->db.Employee.createIndex({ Designation: 1 });
+
+5) To Create Multikey Indexes on Expertise field of employee collection.
+---->db.Employee.createIndex({ Expertise: 1 }, { multikey: true });
+
+# Count all records from collection 
+db.s.aggregate( [{$group: { id: null,count: { $sum: 1 }}}] ) 
+
+# Drop Index on Remove Specific Index 
+db.emp.dropIndex( { "Designation": 1 } ) 
+
+# Remove All Indexes except for the _id index from a collection 
+db.emp.dropIndexes() 
+
+
+7) db.Employee.getIndexes() 
+
+-------------------------------------------------------------------------------------------------------
+
+1)Using aggregation Return separates value in the Expertise array and return sum of each element of array.
+---> db.Employee.aggregate([
+  {
+    $unwind: '$Expertise'
+  },
+  {
+    $group: {
+      _id: '$Expertise',
+      total: { $sum: 1 }
+    }
+  }
+]);
+
+
+The $unwind stage is used to deconstruct the Expertise array, creating a separate document for each element in the array.
+The $group stage groups the documents based on the Expertise values and calculates the sum of occurrences for each expertise.
+
+2) Using Aggregate method return Max and Min Salary for each company
+
+--> db.Employee.aggregate([
+  {
+    $group: {
+      _id: '$CName',
+      maxSalary: { $max: '$Salary' },
+      minSalary: { $min: '$Salary' }
+    }
+  }
+]);
+
+3) Using Aggregate method find Employee with Total Salary for Each City with Designation="DBA".
+---> db.Employee.aggregate([
+  {
+    $match: {
+      Designation: 'Tester'
+    }
+  },
+  {
+    $unwind: '$Address'
+  },
+  {
+    $group: {
+      _id: '$Address.PAddr', 
+      totalSalary: { $sum: '$Salary' }
+    }
+  }
+]);
+
+4)Using aggregation method Return separates value in the Expertise array for employee name where Swapnil Jadhav
+--> db.Employee.aggregate([
+  {
+    $match: {
+      'name.Fname': 'Swaraj',
+      'name.Lname': 'Giri'
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      Expertise: 1
+    }
+  }
+]);
+
+                                            OR
+db.Employee.aggregate ([{$unwind:"$Expertise"}, {$match: {name:"Swaraj"}}]) 
+
+
+5) To Create Compound Indexes on Name: 1, Age: -1
+---> 
+
+7)Return a List of Indexes on created on employee Collection.
+---> db.Employee.getIndexes() 
+
+------------------------------------------------------------------------------------------------------
+
+1) Display the total salary of per company
+---> db.Employee.aggregate([
+  {
+    $group: {
+      _id: '$CName',
+      totalSalary: { $sum: '$Salary' }
+    }
+  }
+]);
+
+2)Display the total salary of company Name:"TCS"
+---> 
+db.Employee.aggregate([
+  {
+    $match: {
+      'CName': 'TCS'
+    }
+  },
+  {
+    $group: {
+      _id: '$CName',
+      totalSalary: { $sum: '$Salary' }
+    }
+  }
+]);
+
+3)Return the average salary of company whose address is “Pune".
+---> db.Employee.aggregate([
+  {
+    $match: {
+      'Address.PAddr': 'Pune'
+    }
+  },
+  {
+    $group: {
+      _id: '$Cname',
+      averageSalary: { $avg: '$Salary' }
+    }
+  }
+]);
+
+4)Display total count for “City=Pune”
+---> db.Employee.aggregate([
+  {
+    $match: {
+      'Address.PAddr': 'Pune'
+    }
+  },
+  {
+    $group: {
+      _id: null,
+      totalCount: { $sum: 1 }
+    }
+  }
+]);
+
+5)Return count for city pune and age greater than 40.
+---> db.Employee.aggregate([
+  {
+    $match: {
+      'Address.PAddr': 'Pune',
+      'Age': { $gt: 40 }
+    }
+  },
+  {
+    $group: {
+      _id: null,
+      totalCount: { $sum: 1 }
+    }
+  }
+]);
+
+
+
+NoSQL stands for not only SQL.  
+ It is nontabular database system that store data differently than relational tables. 
+There are various types of NoSQL databases such as document, key-value, wide 
+column and graph.
+
+The NoSQL database technology is usually adopted for following reasons - 
+1) The NoSQL databases are often used for handling big data as a part of fundamental 
+architecture. 
+2) The NoSQL databases are used for storing and modelling structured, semi
+structured and unstructured data. 
+3) For the efficient execution of database with high availability, NoSQL is used. 
+4) The NoSQL database is non-relational, so it scales out better than relational 
+databases and these can be designed with web applications. 
+5) For easy scalability, the NoSQL is used
+
+1. Key-value store 
+2. Document store                               
+3. Graph based 
+4. Wide column store 
+
+Document databases organize documents into groups called collections, which are analogous to the tables in relational databases. Key-value databases store all key-value pairs together in a single namespace, which is analogous to a relational schema.
+
+MongoDB  
+ MongoDB is an open source, document based database. 
+ It is developed and supported by a company named 10gen which is now known as 
+MongoDB Inc. 
+ The first ready version of MongoDB was released in March 2010. 
+Why MongoDB is needed ? 
+There are so many efficient RDBMS products available in the market, then why do we 
+need MongoDB? Well, all the modern applications require Big data, faster development 
+and flexible deployment. This need is satisfied by the document based database like 
+MongoDB.  
+Features of MongoDB 
+1) It is a schema-less, document based database system. 
+2) It provides high performance data persistence. 
+3) It supports multiple storage engines. 
+4) It has a rich query language support. 
+5) MongoDB provides high availability and redundancy with the help of replication
+
+ACID: Emphasizes strong consistency and reliability in transactions, often associated with traditional relational databases.
+
+BASE: Emphasizes availability and fault tolerance, often associated with distributed and NoSQL databases, where strict consistency may be relaxed in favor of availability and partition tolerance.
+
+Sql terms(Database,Tables,Rows,Columns)  , Mongo(database,Collections,Documents,Fields)
+
+
+Indexing in MongoDB is a technique used to improve the speed of queries by allowing the database to locate and retrieve data more efficiently. Indexes are data structures that store a small portion of the data set in a form that is easy to traverse, making the search for specific documents faster.
+(_id is default index)
+
+MongoDB Aggregation is a powerful framework for performing data transformations and processing in MongoDB. It allows you to process data records and return computed results. Aggregation is used to perform various operations on data such as filtering, grouping, sorting, and transforming the data.
+1)$match() stage= Filters those documents we need to work, those that fit our needs
+2)$group() stage= this aggregation stage groups documents by the unique _id expression provided.
+3)$sort() stage= sorts the resulting documents the way we require (ascending order or descending order)
+4)$project()= This will return the documents but only include the specified fields.(We use a 1 to include a field and 0 to exclude a field.)
+5)$unwind()= Deconstructs an array fiels and products multiple documents.
+
+########################################CONNECTIVITY#################################################3#
+
+sudo python -m pip install pymongo
+
+from pymongo import MongoClient
+
+# Connection to MongoDB
+client = MongoClient('mongodb://localhost:27017')
+
+# Selecting a database
+db = client['your_database_name']
+
+# Selecting a collection
+collection = db['your_collection_name']
+
+# Adding a new document
+new_document = {
+    'name': 'John Doe',
+    'age': 25,
+    'email': 'john@example.com'
+}
+collection.insert_one(new_document)
+
+# Querying and updating a document
+document = collection.find_one({'name': 'John Doe'})
+document['age'] = 26
+collection.replace_one({'_id': document['_id']}, document)
+
+# Deleting a document
+collection.delete_one({'name': 'John Doe'})
+
+
+--------------------------------------------------------------------------------------------------------------------------------------
+This line imports the MongoClient class from the pymongo library, which is the official MongoDB driver for Python.
+Here, a MongoClient object named client is created, establishing a connection to the MongoDB server running on localhost at port 27017. Adjust the connection string if your MongoDB server is running on a different host or port.
+Here, a MongoClient object named client is created, establishing a connection to the MongoDB server running on localhost at port 27017. Adjust the connection string if your MongoDB server is running on a different host or port.
+Similarly, the code selects a specific collection within the chosen database using the [] notation on the db object. Replace 'your_collection_name' with the actual name of your MongoDB collection
+This part of the code demonstrates inserting a new document into the selected collection. The document is represented as a Python dictionary (new_document) with fields such as 'name', 'age', and 'email'. The insert_one method is then called on the collection object to insert the document into the MongoDB collection
+
+
+Explanation_--->
+Installing PyMongo:
+
+bash
+Copy code
+sudo python -m pip install pymongo
+This command installs the PyMongo library, which is a Python driver for MongoDB. It allows you to interact with MongoDB databases from your Python code.
+
+Running the MongoDB Shell:
+
+bash
+Copy code
+mongo
+This command launches the MongoDB shell, where you can interact with MongoDB using command-line statements.
+
+Switching to the "test1" Database:
+
+bash
+Copy code
+use test1
+This command switches to the "test1" database in the MongoDB shell. If the "test1" database does not exist, MongoDB will create it.
+
+Creating a Collection:
+
+bash
+Copy code
+db.createCollection("EMP")
+This command creates a collection named "EMP" within the "test1" database. Collections in MongoDB are similar to tables in relational databases.
+
+Querying Documents in the "EMP" Collection:
+
+bash
+Copy code
+db.EMP.find().pretty()
+This command queries all documents in the "EMP" collection and formats the output in a more readable manner using the .pretty() method.
+
+Now, let's analyze the Python code in the "test1.py" script:
+
+python
+Copy code
+from pymongo import MongoClient
+
+# Create a connection to the MongoDB server
+client = MongoClient("mongodb://127.0.0.1:27017")
+
+# Access the "test1" database
+database = client.test1
+
+# Access the "EMP" collection
+collection = database.EMP
+
+# Insert a document into the "EMP" collection
+collection.insert_one({"name": "John Doe", "smartphone": "iPhone", "quantity": "10"})
+print("Inserted")
+
+# Close the MongoDB client connection
+client.close()
+Here's what the Python code does:
+
+It imports the MongoClient class from the PyMongo library to establish a connection to the MongoDB server.
+It connects to the MongoDB server running on "127.0.0.1" (localhost) at port 27017.
+It accesses the "test1" database within the MongoDB server.
+It accesses the "EMP" collection within the "test1" database.
+It inserts a document (a record) into the "EMP" collection. This document has fields "name," "smartphone," and "quantity."
+It prints "Inserted" to the console to indicate that the insertion was successful.
+Finally, it closes the MongoDB client connection.
+To execute this Python script, you can run it from a terminal using the following command:
+
+bash
+Copy code
+python test1.py
+This script inserts a document into the "EMP" collection within the "test1" database of your MongoDB server.
+
+###################################################################################################################################33333
+
+
+
+Ubuntu open command prompt then
+1. pip install mysql-connector
+2
+>sudo mysql -u root -p
+>USE mysql;
+>UPDATE user SET plugin='mysql_native_password' WHERE User='root';
+>FLUSH PRIVILEGES;
+>exit;
+>service mysql restart
+3. then again open mysql
+> create database db3;
+> use db3;
+> create table stud1(name varchar(10), rno int);
+> exit;
+ 4.on root prompt excute follwing pyhon file ( which is saveed in home directory)
+file name is python_conn11.py
+> python python_conn.py
+5. then open mysql 
+> use db3
+> select * from stud1;
+************
+ python_conn11.py    
+ **
+import mysql.connector
+mydb = mysql.connector.connect(
+  host="localhost",
+  user=" root",
+ # password="",
+  database="db3"
+)
+mycursor = mydb.cursor()
+sql = "INSERT INTO stud1 (name, rno) VALUES ('Ram', 22)"
+mycursor.execute(sql)
+mydb.commit()
+print(mycursor.rowcount, "record inserted.")
+
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+Explanation--->
+
+
+It looks like you have provided a series of steps to set up and execute a Python script that connects to a MySQL database. Let's break down each step and explain the MySQL connectivity code in the "python_conn11.py" script.
+
+Step 1: Install the MySQL Connector for Python
+
+bash
+Copy code
+pip install mysql-connector
+This step installs the mysql-connector Python package, which is a MySQL driver for Python.
+
+Step 2: MySQL Configuration
+
+sql
+Copy code
+sudo mysql -u root -p
+USE mysql;
+UPDATE user SET plugin='mysql_native_password' WHERE User='root';
+FLUSH PRIVILEGES;
+exit;
+service mysql restart
+In this step, you log in to MySQL as the root user and perform the following actions:
+
+Switch to the "mysql" database.
+Update the user's authentication plugin to 'mysql_native_password.' This is often necessary for root user authentication.
+Flush the privileges to apply the changes.
+Exit the MySQL shell.
+Restart the MySQL service.
+Step 3: Create a Database and Table
+
+sql
+Copy code
+mysql
+create database db3;
+use db3;
+create table stud1(name varchar(10), rno int);
+exit;
+Here, you enter the MySQL shell again, create a new database named "db3," switch to the "db3" database, and create a table named "stud1" with two columns: "name" and "rno."
+
+Step 4: Execute the Python Script
+
+bash
+Copy code
+python python_conn.py
+This step runs the Python script named "python_conn11.py."
+
+Step 5: Check the Database
+
+sql
+Copy code
+mysql
+use db3;
+select * from stud1;
+You enter the MySQL shell again, switch to the "db3" database, and select all records from the "stud1" table to verify the data insertion.
+
+Now, let's explain the Python code in "python_conn11.py":
+
+python
+Copy code
+import mysql.connector
+
+mydb = mysql.connector.connect(
+  host="localhost",
+  user="root",
+  database="db3"
+)
+
+mycursor = mydb.cursor()
+sql = "INSERT INTO stud1 (name, rno) VALUES ('Ram', 22)"
+mycursor.execute(sql)
+mydb.commit()
+print(mycursor.rowcount, "record inserted.")
+Here's what the Python code does:
+It imports the mysql.connector module, which is used to connect to a MySQL database.
+It establishes a connection to the MySQL database hosted on the local machine ("localhost") using the specified user ("root") and database ("db3").
+It creates a cursor object mycursor to interact with the database.
+It defines an SQL INSERT statement to insert a new record into the "stud1" table with the values 'Ram' and 22 for the "name" and "rno" columns, respectively.
+It executes the SQL statement using mycursor.execute(sql).
+It commits the changes to the database using mydb.commit().
+It prints the number of records inserted by accessing mycursor.rowcount.
+In this script, a single record with the values 'Ram' and 22 is inserted into the "stud1" table of the "db3" database.
+
+
+
+
