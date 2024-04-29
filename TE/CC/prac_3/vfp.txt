@@ -1,0 +1,28 @@
+<apex:page standardController="Account" extensions="CreateAccount">
+	<apex:form id="apexFrom" >
+		<apex:pageBlock title="Create Account:" id="pageBlockId">
+            
+			<apex:pageMessages id="showmsg"></apex:pageMessages>
+			<apex:pageBlockSection columns="2" >
+             	
+				<apex:inputText value="{!name}" label="Name" required="true"/>
+				<apex:inputText value="{!phoneNumber}" label="Phone" />
+				<apex:selectList size="1" value="{!selectedname}" label="Party_of_choice">
+					<apex:selectOptions value="{!lstnamesel}"/>
+				</apex:selectList>
+				<apex:inputText value="{!state}" label="State" />
+           		<apex:inputText value="{!city}" label="City" />
+                <apex:inputText value="{!pincode}" label="Pincode" />
+                <apex:inputText value="{!aadharNo}" label="AadharNo" />
+			</apex:pageBlockSection>
+       
+				<apex:commandButton action="{!createAccount}" value="Save"/>
+				<apex:commandButton action="{!cancelAccount}" value="Cancel"/>
+			
+		</apex:pageBlock>
+        
+	<!-- ACTION FUNCTIONS-->
+	<apex:actionFunction name="createFunction" action="{!createAccount}"/>
+	<apex:actionFunction name="cancelFunction" action="{!cancelAccount}"/>
+	</apex:form>
+</apex:page>

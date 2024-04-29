@@ -1,0 +1,47 @@
+<apex:page controller="Calculator">
+    <style>
+        .center {
+            text-align: center;
+        }
+        .input-column {
+            display: inline-block;
+            vertical-align: top;
+            width: 45%; /* Adjust width as needed */
+            margin-bottom: 10px; /* Adjust margin as needed */
+        }
+        .operation-dropdown {
+            margin-top: 10px; /* Adjust margin as needed */
+        }
+    </style>
+    <apex:form >
+        <apex:pageBlock title="Calculator">
+            <div class="input-column">
+                <apex:pageBlockSection >
+                    <apex:inputText value="{!num1}" label="Number 1"/>
+                </apex:pageBlockSection>
+                <div class="center">
+                    <apex:selectList value="{!selectedOperation}" size="1" label="Operation">
+                        <apex:selectOption itemLabel="+" itemValue="+" />
+                        <apex:selectOption itemLabel="-" itemValue="-" />
+                        <apex:selectOption itemLabel="*" itemValue="*" />
+                        <apex:selectOption itemLabel="/" itemValue="/" />
+                    </apex:selectList>
+                     <apex:commandButton action="{!performOperation}" value="Calculate" rerender="result"/>
+                </div>
+            </div>
+            <div class="input-column">
+                <apex:pageBlockSection >
+                    <apex:inputText value="{!num2}" label="Number 2"/>
+                </apex:pageBlockSection>
+                <div class="center">
+                    <apex:outputPanel style="text-align:center;" id="result">
+                <apex:outputText rendered="{!result != null}" value="Result: {!result}"/>
+                <apex:outputText rendered="{!result == null}" value="Error: Division by zero"/>
+            </apex:outputPanel>
+                </div>
+            </div>
+
+            
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

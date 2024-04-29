@@ -1,0 +1,44 @@
+public class CreateAccount {
+	public String name {get; set;}
+	public String phoneNumber {get; set;}
+	public String selectedname {get; set;}
+	public String state {get; set;}
+    public String city {get; set;}
+    public Decimal pincode {get; set;}
+    public Decimal aadharNo {get; set;}
+	public List<Selectoption> lstnamesel {get; set;}
+    
+	public CreateAccount(ApexPages.StandardController controller) {
+		lstnamesel = new List<selectoption>();
+		lstnamesel.add(new selectOption('','-NOTA-'));
+		lstnamesel.add(new selectOption('BJP','BJP'));
+		lstnamesel.add(new selectOption('Congress','Congress'));
+		lstnamesel.add(new selectOption('NCP','NCP'));
+		lstnamesel.add(new selectOption('ShivSena','ShivSena'));
+        lstnamesel.add(new selectOption('Manase','Manase'));
+	}
+    
+	public PageReference createAccount() {
+		System.debug('teset create');
+		if(!String.isEmpty(name)) {
+			Account accountRecord = new Account(Name = name,
+				Phone = phoneNumber,
+				Party__c = selectedname, state__c = state, City__c = city, Pincode__c = pincode,
+                AadharNo__c = aadharNo);
+			INSERT accountRecord;
+        
+			PageReference pg = new PageReference('/'+accountRecord.Id);
+			pg.setRedirect(true);
+			return pg;
+		} 
+    	else {
+				ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,'Please enter Account Name'));
+			}
+			return NULL;
+		}
+    
+	public PageReference cancelAccount() {
+		PageReference pg = new PageReference('/'+Schema.SObjectType.Account.getKeyPrefix()+'/o');
+   		return pg;
+	}
+}

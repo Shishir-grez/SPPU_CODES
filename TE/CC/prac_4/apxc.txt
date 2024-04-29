@@ -1,0 +1,39 @@
+public class Calculator {
+    public Decimal num1 {get;set;}
+    public Decimal num2 {get;set;}
+    public Decimal result {get;set;}
+    public String selectedOperation {get;set;} // Variable to store the selected operation
+
+    public void performOperation() {
+        if(selectedOperation == '+') {
+            add();
+        } else if(selectedOperation == '-') {
+            subtract();
+        } else if(selectedOperation == '*') {
+            multiply();
+        } else if(selectedOperation == '/') {
+            divide();
+        }
+    }
+
+    private void add() {
+        result = num1 + num2;
+    }
+
+    private void subtract() {
+        result = num1 - num2;
+    }
+
+    private void multiply() {
+        result = num1 * num2;
+    }
+
+    private void divide() {
+        if (num2 != 0) {
+            result = num1 / num2;
+        } else {
+            // Handle division by zero
+            result = null;
+        }
+    }
+}

@@ -1,0 +1,3 @@
+After Launching the instance : 
+1 ) chmod 400 "file_name.pem"
+2 ) ssh -i "shishir.pem" public dns 
