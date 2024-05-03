@@ -27,7 +27,7 @@ class Node:
             if (0 <= i[0] < len(self.data) and 0 <= i[1] < len(self.data[0])):
                 t = self.copy()
                 temp = t[x][y]
-                t[x][y] = t[i[0]][i[1]]
+                t[x][y] = t[i[0]][i[1]] # i[0] is the x coor , i[1]  is y coor
                 t[i[0]][i[1]] = temp
 
                 child_node = Node(t, self.level+1, 0)

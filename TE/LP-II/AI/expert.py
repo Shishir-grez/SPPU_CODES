@@ -25,7 +25,7 @@ def diagnose(symptoms, conditions):
 
 
 def main():
-    # Define Symptoms
+    # Define Symptomsy
     symptom_fever = Symptom("Fever")
     symptom_cough = Symptom("Cough")
     symptom_headache = Symptom("Headache")
@@ -75,24 +75,3 @@ def main():
 if __name__ == "__main__":
     main()
     
-"""Please answer in yes or no
- Do you have fever? (yes/no): yes
-Please answer in yes or no
- Do you have cough? (yes/no): no
-Please answer in yes or no
- Do you have headache? (yes/no): yes
-Please answer in yes or no
- Do you have sore throat? (yes/no): no
-Please answer in yes or no
- Do you have memory loss? (yes/no): yes
-Please answer in yes or no
- Do you have confusion? (yes/no): yes
-Please answer in yes or no
- Do you have mood swings? (yes/no): yes
-Please answer in yes or no
- Do you have weakness? (yes/no): no
-Please answer in yes or no
- Do you have joint pain? (yes/no): no
-Possible conditions you might be suffering from may be :
-- Migraine
-- Alzheimer's"""
